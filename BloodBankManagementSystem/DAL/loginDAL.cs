@@ -1,8 +1,10 @@
 ﻿using BloodBankManagementSystem.BLL;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -11,50 +13,76 @@ using System.Windows.Forms;
 
 namespace BloodBankManagementSystem.DAL
 {
-    class loginDAL
+    public class loginDAL
     {
         //Create Static String to Connect Database
         static string myconnstrng = ConfigurationManager.ConnectionStrings["connstrng"].ConnectionString;
+
+        private IDbConnection conn;
+        private IDbDataAdapter adapter;
+
+        public loginDAL()
+        {
+            //Connecting DAtabase
+            conn = new SqlConnection(myconnstrng);
+            adapter = new SqlDataAdapter();
+        }
+
+        public loginDAL(IDbConnection conn, IDbDataAdapter adapter)
+        {
+            this.conn = conn;
+            this.adapter = adapter;
+        }
+        
 
         public bool loginCheck(loginBLL l)
         {
             //Create a Boolean Variable and SEt its default value to false
             bool isSuccess = false;
 
-            //Connecting DAtabase
-            SqlConnection conn = new SqlConnection(myconnstrng);
-
             try
             {
                 //SQL Query to Check Login BAsed on Usename and Password
                 string sql = "SELECT * FROM tbl_users WHERE username=@username AND password=@password";
 
+                IDbCommand cmd = conn.CreateCommand();
                 //Create SQL Command to Pass the value to SQL Query
-                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+
 
                 //Pass the value to SQL Query Using Parameters
-                cmd.Parameters.AddWithValue("@username", l.username);
-                cmd.Parameters.AddWithValue("@password", l.password);
-
+                IDbDataParameter userParameter = cmd.CreateParameter();
+                userParameter.ParameterName = "@username";
+                userParameter.Value = l.username;
+                cmd.Parameters.Add(userParameter);
+                
+                IDbDataParameter passwordParameter = cmd.CreateParameter();
+                passwordParameter.ParameterName = "@password";
+                passwordParameter.Value = l.password;
+                cmd.Parameters.Add(passwordParameter);
+                
                 //SQl Data Adapeter to Get the Data from Database
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                adapter.SelectCommand = cmd;
 
-                //DataTable to Hold the data from database temporarily
-                DataTable dt = new DataTable();
-
+                //Dataset to Hold the data from database temporarily
+                DataSet s = new DataSet();
+                
                 //Filld the data from adapter to dt
-                adapter.Fill(dt);
-
-                //Chekc whether user exists or not
-                if(dt.Rows.Count>0)
+                adapter.Fill(s);
+                foreach (DataTable table in s.Tables)
                 {
-                    //User Exists and Login Successful
-                    isSuccess = true;
-                }
-                else
-                {
-                    //Login Failed
-                    isSuccess = false;
+                    //Chekc whether user exists or not
+                    if(table.Rows.Count>0)
+                    {
+                        //User Exists and Login Successful
+                        isSuccess = true;
+                    }
+                    else
+                    {
+                        //Login Failed
+                        isSuccess = false;
+                    }
                 }
 
             }
