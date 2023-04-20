@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net45</TargetFramework>
+        <TargetFramework>net48</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
@@ -21,6 +21,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BloodBankManagementSystem\BloodBankManagementSystem.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="System.Net.Http" />
     </ItemGroup>
 
 </Project>
