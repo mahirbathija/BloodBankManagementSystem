@@ -9,14 +9,20 @@ namespace BloodBankManagementSystem.Tests
 {
     public class LoginDALTests
     {
-        [Test]
-        public void loginDal_loginCheck_Success()
+        private Mock<IDbConnection> mockDbConnection;
+        private Mock<IDbDataAdapter> mockDbDataAdapter;
+        private Mock<IDbCommand> mockDbCommand;
+        private Mock<IDbDataParameter> mockParameter;
+        private Mock<IDataParameterCollection> mockDataParameterCollection;
+
+        [SetUp]
+        public void Setup()
         {
-            var mockDbConnection = new Mock<IDbConnection>();
-            var mockDbDataAdapter = new Mock<IDbDataAdapter>();
-            var mockDbCommand = new Mock<IDbCommand>();
-            var mockParameter = new Mock<IDbDataParameter>();
-            var mockDataParameterCollection = new Mock<IDataParameterCollection>();
+            mockDbConnection = new Mock<IDbConnection>();
+            mockDbDataAdapter = new Mock<IDbDataAdapter>();
+            mockDbCommand = new Mock<IDbCommand>();
+            mockParameter = new Mock<IDbDataParameter>();
+            mockDataParameterCollection = new Mock<IDataParameterCollection>();
             
             mockDbConnection.SetupAllProperties();
             mockDbDataAdapter.SetupAllProperties();
@@ -26,7 +32,13 @@ namespace BloodBankManagementSystem.Tests
 
             mockDbCommand.Setup(m => m.CreateParameter()).Returns(mockParameter.Object);
             mockDbCommand.SetupGet(m => m.Parameters).Returns(mockDataParameterCollection.Object);
-
+            
+            mockDbConnection.Setup(m => m.CreateCommand()).Returns(mockDbCommand.Object);
+        }
+        
+        [Test]
+        public void loginDal_loginCheck_Success()
+        {
             mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
             {
                 // Create mock data
@@ -39,9 +51,7 @@ namespace BloodBankManagementSystem.Tests
                 dataSet.Tables.Add(table);
 
                 return table.Rows.Count;
-            });        
-            
-            mockDbConnection.Setup(m => m.CreateCommand()).Returns(mockDbCommand.Object);
+            });
 
             var loginBll = new loginBLL
             {
