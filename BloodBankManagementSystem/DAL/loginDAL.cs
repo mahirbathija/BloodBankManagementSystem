@@ -43,48 +43,42 @@ namespace BloodBankManagementSystem.DAL
             try
             {
                 //SQL Query to Check Login BAsed on Usename and Password
-                string sql = "SELECT * FROM tbl_users WHERE username=@username AND password=@password";
+                var sql = "SELECT * FROM tbl_users WHERE username=@username AND password=@password";
 
-                IDbCommand cmd = conn.CreateCommand();
+                var cmd = conn.CreateCommand();
                 //Create SQL Command to Pass the value to SQL Query
                 cmd.CommandText = sql;
                 cmd.Connection = conn;
 
 
                 //Pass the value to SQL Query Using Parameters
-                IDbDataParameter userParameter = cmd.CreateParameter();
+                var userParameter = cmd.CreateParameter();
                 userParameter.ParameterName = "@username";
                 userParameter.Value = l.username;
                 cmd.Parameters.Add(userParameter);
                 
-                IDbDataParameter passwordParameter = cmd.CreateParameter();
+                var passwordParameter = cmd.CreateParameter();
                 passwordParameter.ParameterName = "@password";
                 passwordParameter.Value = l.password;
                 cmd.Parameters.Add(passwordParameter);
                 
-                //SQl Data Adapeter to Get the Data from Database
+                //SQl Data Adapter to Get the Data from Database
                 adapter.SelectCommand = cmd;
 
                 //Dataset to Hold the data from database temporarily
-                DataSet s = new DataSet();
+                var dataSet = new DataSet();
                 
-                //Filld the data from adapter to dt
-                adapter.Fill(s);
-                foreach (DataTable table in s.Tables)
-                {
-                    //Chekc whether user exists or not
-                    if(table.Rows.Count>0)
-                    {
-                        //User Exists and Login Successful
-                        isSuccess = true;
-                    }
-                    else
-                    {
-                        //Login Failed
-                        isSuccess = false;
-                    }
-                }
+                //Fill the data from adapter to dataset
+                adapter.Fill(dataSet);
 
+                var table = dataSet.Tables[0];
+                
+                //Check whether user exists or not
+                if(table.Rows.Count>0)
+                {
+                    //User Exists and Login Successful
+                    isSuccess = true;
+                }
             }
             catch(Exception ex)
             {
