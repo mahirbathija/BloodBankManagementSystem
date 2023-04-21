@@ -1,14 +1,8 @@
 ﻿using BloodBankManagementSystem.BLL;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Data.Common;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BloodBankManagementSystem.DAL
@@ -16,13 +10,14 @@ namespace BloodBankManagementSystem.DAL
     public class loginDAL
     {
         //Create Static String to Connect Database
-        static string myconnstrng = ConfigurationManager.ConnectionStrings["connstrng"].ConnectionString;
 
         private IDbConnection conn;
         private IDbDataAdapter adapter;
 
         public loginDAL()
         {
+            string myconnstrng = ConfigurationManager.ConnectionStrings["connstrng"].ConnectionString;
+            
             //Connecting DAtabase
             conn = new SqlConnection(myconnstrng);
             adapter = new SqlDataAdapter();
@@ -45,8 +40,8 @@ namespace BloodBankManagementSystem.DAL
                 //SQL Query to Check Login BAsed on Usename and Password
                 var sql = "SELECT * FROM tbl_users WHERE username=@username AND password=@password";
 
-                var cmd = conn.CreateCommand();
                 //Create SQL Command to Pass the value to SQL Query
+                var cmd = conn.CreateCommand();
                 cmd.CommandText = sql;
                 cmd.Connection = conn;
 

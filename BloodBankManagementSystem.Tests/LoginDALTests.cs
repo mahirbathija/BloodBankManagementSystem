@@ -1,6 +1,5 @@
-using System;
+using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using BloodBankManagementSystem.BLL;
 using BloodBankManagementSystem.DAL;
 using Moq;
@@ -11,22 +10,46 @@ namespace BloodBankManagementSystem.Tests
     public class LoginDALTests
     {
         [Test]
-        public void loginBll_CanCreate_Get_Set()
+        public void loginDal_loginCheck_Success()
         {
-            var sqlConMock = new Mock<IDbConnection>();
-            var mockCmd = new Mock<IDbDataAdapter>();
+            var mockDbConnection = new Mock<IDbConnection>();
+            var mockDbDataAdapter = new Mock<IDbDataAdapter>();
+            var mockDbCommand = new Mock<IDbCommand>();
+            var mockParameter = new Mock<IDbDataParameter>();
+            var mockDataParameterCollection = new Mock<IDataParameterCollection>();
+            
+            mockDbConnection.SetupAllProperties();
+            mockDbDataAdapter.SetupAllProperties();
+            mockDbCommand.SetupAllProperties();
+            mockParameter.SetupAllProperties();
+            mockDataParameterCollection.SetupAllProperties();
 
-            sqlConMock.Setup(x => x.CreateCommand()).CallBase();
+            mockDbCommand.Setup(m => m.CreateParameter()).Returns(mockParameter.Object);
+            mockDbCommand.SetupGet(m => m.Parameters).Returns(mockDataParameterCollection.Object);
+
+            mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
+            {
+                // Create mock data
+                var table = new DataTable("MockUserTable");
+                table.Columns.Add("username", typeof(string));
+                table.Columns.Add("password", typeof(string));
+                table.Rows.Add("admin", "admin");
+
+                // Add the mock data to the dataset
+                dataSet.Tables.Add(table);
+
+                return table.Rows.Count;
+            });        
+            
+            mockDbConnection.Setup(m => m.CreateCommand()).Returns(mockDbCommand.Object);
 
             var loginBll = new loginBLL
             {
                 username = "admin",
                 password = "admin",
             };
-
-            var ob1 = sqlConMock.Object;
-            var ob2 = mockCmd.Object;
-            loginDAL loginDal = new loginDAL();
+            
+            var loginDal = new loginDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
 
             var success = loginDal.loginCheck(loginBll);
             
