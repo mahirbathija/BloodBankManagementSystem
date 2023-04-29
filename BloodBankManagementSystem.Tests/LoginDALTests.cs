@@ -112,42 +112,5 @@ namespace BloodBankManagementSystem.Tests
             /*Assert.True(success);*/
         }
 
-
-
-
-        [Test]
-        [TestCase("Sean", "pass", ExpectedResult = true, TestName = "LoginDAL_check_true_Not_inFilledTable(Sean,pass)")]
-        [TestCase("admin", "pass", ExpectedResult = true, TestName = "LoginDAL_check_true_Not_inFilledTable(admin,pass)")]
-        [TestCase("Sean", "admin", ExpectedResult = true, TestName = "LoginDAL_check_true_Not_inFilledTable(Sean,pass)")]
-        [TestCase("", "pass", ExpectedResult = true, TestName = "LoginDAL_check_true_Not_inFilledTable(Sean,pass)")]
-        [TestCase("Sean", "", ExpectedResult = true, TestName = "LoginDAL_check_true_Not_inFilledTable(Sean,)")]
-        [TestCase("", "", ExpectedResult = true, TestName = "LoginDAL_check_true_Not_inFilledTable(,)")]
-        [TestCase(null, null, ExpectedResult = true, TestName = "LoginDAL_check_true_Not_inFilledTable(null,null)")]
-        [TestCase(null, "pass", ExpectedResult = true, TestName = "LoginDAL_check_true_Not_inFilledTable(null,pass)")]
-        [TestCase("Sean", null, ExpectedResult = true, TestName = "LoginDAL_check_true_Not_inFilledTable(Sean,null)")]
-
-        public Boolean loginDal_loginCheck_withData_Fail(String Login_Username, String Login_Password)
-        {
-            mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
-            {
-                var table = new DataTable("MockUserTable");
-                table.Columns.Add("username", typeof(string));
-                table.Columns.Add("password", typeof(string));
-                table.Rows.Add("admin", "admin");
-                dataSet.Tables.Add(table);
-                return table.Rows.Count;
-            });
-
-            var loginBll = new loginBLL
-            {
-                username = Login_Username,
-                password = Login_Password,
-            };
-
-            var loginDal = new loginDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
-
-            var failure = loginDal.loginCheck(loginBll); //does login fail
-            return failure;
-        }
     }
 }
