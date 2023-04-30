@@ -112,5 +112,46 @@ namespace BloodBankManagementSystem.Tests
             /*Assert.True(success);*/
         }
 
+
+        [Test]
+        [TestCase("Sean", "pass", ExpectedResult = false, TestName = "LoginDAL_check_false_Not_inFilledTable(Sean,pass)")]
+        [TestCase("admin", "pass", ExpectedResult = false, TestName = "LoginDAL_check_false_Not_inFilledTable(admin,pass)")]
+        [TestCase("Sean", "admin", ExpectedResult = false, TestName = "LoginDAL_check_false_Not_inFilledTable(Sean,pass)")]
+        [TestCase("", "pass", ExpectedResult = false, TestName = "LoginDAL_check_false_Not_inFilledTable(Sean,pass)")]
+        [TestCase("Sean", "", ExpectedResult = false, TestName = "LoginDAL_check_false_Not_inFilledTable(Sean,)")]
+        [TestCase("", "", ExpectedResult = false, TestName = "LoginDAL_check_false_Not_inFilledTable(,)")]
+        [TestCase(null, null, ExpectedResult = false, TestName = "LoginDAL_check_false_Not_inFilledTable(null,null)")]
+        [TestCase(null, "", ExpectedResult = false, TestName = "LoginDAL_check_false_Not_inFilledTable(null,)")]
+        [TestCase("Sean", null, ExpectedResult = false, TestName = "LoginDAL_check_false_Not_inFilledTable(Sean,null)")]
+
+        public Boolean loginDal_loginCheck_withData_Fail(String Login_Username, String Login_Password)
+        {
+            mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
+            {
+                // Create mock data
+                var table = new DataTable("MockUserTable");
+                table.Columns.Add("username", typeof(string));
+                table.Columns.Add("password", typeof(string));
+                table.Rows.Add("admin", "admin");
+
+                // Add the mock data to the dataset
+                dataSet.Tables.Add(table);
+
+                return table.Rows.Count;
+            });
+
+            var loginBll = new loginBLL
+            {
+                username = Login_Username,
+                password = Login_Password,
+            };
+
+            var loginDal = new loginDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+
+            var loginResult = loginDal.loginCheck(loginBll);
+
+            return loginResult;
+        }
+
     }
 }
