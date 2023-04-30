@@ -64,12 +64,10 @@ namespace BloodBankManagementSystem.DAL
                 var dataSet = new DataSet();
                 
                 //Fill the data from adapter to dataset
-                adapter.Fill(dataSet);
-
-                var table = dataSet.Tables[0];
+                var usersFound = adapter.Fill(dataSet);
                 
                 //Check whether user exists or not
-                if(table.Rows.Count>0)
+                if(usersFound == 1)
                 {
                     //User Exists and Login Successful
                     isSuccess = true;

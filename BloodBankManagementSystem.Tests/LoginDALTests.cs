@@ -5,6 +5,7 @@ using System.Configuration.Internal;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Reflection;
 using BloodBankManagementSystem.BLL;
 using BloodBankManagementSystem.DAL;
@@ -130,10 +131,25 @@ namespace BloodBankManagementSystem.Tests
         {
             mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
             {
+                IList<loginBLL> users = new List<loginBLL>
+                {
+                    new()
+                    {
+                        username = "admin",
+                        password = "admin"
+                    }
+                };
+
                 // Create mock data
                 var table = new DataTable("MockUserTable");
                 table.Columns.Add("username", typeof(string));
                 table.Columns.Add("password", typeof(string));
+
+                if (users.Any(u => u.username == Login_Username && u.password == Login_Password))
+                {
+                    table.Rows.Add(Login_Username, Login_Password);
+                }
+                
 
                 // Add the mock data to the dataset
                 dataSet.Tables.Add(table);
