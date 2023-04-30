@@ -45,7 +45,13 @@ namespace BloodBankManagementSystem.Tests
         }
 
         [Test]
-        [TestCase("Nidhan", "123", ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(Nidhan,123)")]
+        [TestCase("Mahir", "123", ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(Mahir,123)")]
+        [TestCase("", "", ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(,)")]
+        [TestCase(null, null, ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(null,null)")]
+        [TestCase("Mahir", "", ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(Mahir,)")]
+        [TestCase("", "123", ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(,123)")]
+        [TestCase("Mahir", null, ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(Mahir,null)")]
+        [TestCase(null, "123", ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(null,123)")]
         public bool loginDal_loginCheck_Success(string Login_Username, string Login_Password)
         {
             mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
@@ -87,7 +93,6 @@ namespace BloodBankManagementSystem.Tests
 
             return success;
         }
-
 
 
         [Test]
