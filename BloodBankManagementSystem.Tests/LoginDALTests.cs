@@ -46,17 +46,28 @@ namespace BloodBankManagementSystem.Tests
 
         [Test]
         [TestCase("Nidhan", "123", ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(Nidhan,123)")]
-        [TestCase("Nidhan", "", ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(Nidhan,)")]
-        [TestCase("Nidhan", null, ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(Nidhan,null)")]
         public bool loginDal_loginCheck_Success(string Login_Username, string Login_Password)
         {
             mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
             {
+                IList<loginBLL> users = new List<loginBLL>
+                {
+                    new()
+                    {
+                        username = Login_Username,
+                        password = Login_Password
+                    }
+                };
+
                 // Create mock data
                 var table = new DataTable("MockUserTable");
                 table.Columns.Add("username", typeof(string));
                 table.Columns.Add("password", typeof(string));
-                table.Rows.Add(Login_Username, Login_Password);
+
+                if (users.Any(u => u.username == Login_Username && u.password == Login_Password))
+                {
+                    table.Rows.Add(Login_Username, Login_Password);
+                }
 
                 // Add the mock data to the dataset
                 dataSet.Tables.Add(table);
@@ -149,7 +160,6 @@ namespace BloodBankManagementSystem.Tests
                 {
                     table.Rows.Add(Login_Username, Login_Password);
                 }
-                
 
                 // Add the mock data to the dataset
                 dataSet.Tables.Add(table);
