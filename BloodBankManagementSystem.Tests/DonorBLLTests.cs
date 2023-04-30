@@ -41,6 +41,7 @@ namespace BloodBankManagementSystem.Tests.BLL
             Assert.AreEqual(donor.first_name, first_name);
             Assert.AreEqual(donor.last_name, last_name);
             Assert.AreEqual(donor.email, email);
+            Assert.AreEqual(donor.contact, contact);
             Assert.AreEqual(donor.gender, gender);
             Assert.AreEqual(donor.address, address);
             Assert.AreEqual(donor.blood_group, blood_group);
