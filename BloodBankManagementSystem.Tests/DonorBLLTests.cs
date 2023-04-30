@@ -40,6 +40,14 @@ namespace BloodBankManagementSystem.Tests.BLL
             Assert.AreEqual(donor.donor_id, donor_id);
             Assert.AreEqual(donor.first_name, first_name);
             Assert.AreEqual(donor.last_name, last_name);
+            Assert.AreEqual(donor.email, email);
+            Assert.AreEqual(donor.gender, gender);
+            Assert.AreEqual(donor.address, address);
+            Assert.AreEqual(donor.blood_group, blood_group);
+            Assert.AreEqual(donor.added_date,(DateTime.Parse(added_date)));
+            Assert.AreEqual(donor.image_name, image_name);
+            Assert.AreEqual(donor.added_by, added_by);
+
         }
     }
   }
