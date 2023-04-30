@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Configuration.Internal;
@@ -43,7 +44,10 @@ namespace BloodBankManagementSystem.Tests
         }
 
         [Test]
-        public void loginDal_loginCheck_Success()
+        [TestCase("Nidhan", "123", ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(Nidhan,123)")]
+        [TestCase("Nidhan", "", ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(Nidhan,)")]
+        [TestCase("Nidhan", null, ExpectedResult = true, TestName = "LoginDAL_check_true_Available_inTable(Nidhan,null)")]
+        public bool loginDal_loginCheck_Success(string Login_Username, string Login_Password)
         {
             mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
             {
@@ -51,7 +55,7 @@ namespace BloodBankManagementSystem.Tests
                 var table = new DataTable("MockUserTable");
                 table.Columns.Add("username", typeof(string));
                 table.Columns.Add("password", typeof(string));
-                table.Rows.Add("admin", "admin");
+                table.Rows.Add(Login_Username, Login_Password);
 
                 // Add the mock data to the dataset
                 dataSet.Tables.Add(table);
@@ -69,7 +73,7 @@ namespace BloodBankManagementSystem.Tests
 
             var success = loginDal.loginCheck(loginBll);
 
-            Assert.True(success);
+            return success;
         }
 
 
@@ -108,8 +112,6 @@ namespace BloodBankManagementSystem.Tests
             var failure = loginDal.loginCheck(loginBll);
 
             return failure;
-
-            /*Assert.True(success);*/
         }
 
 
@@ -132,7 +134,6 @@ namespace BloodBankManagementSystem.Tests
                 var table = new DataTable("MockUserTable");
                 table.Columns.Add("username", typeof(string));
                 table.Columns.Add("password", typeof(string));
-                table.Rows.Add("admin", "admin");
 
                 // Add the mock data to the dataset
                 dataSet.Tables.Add(table);

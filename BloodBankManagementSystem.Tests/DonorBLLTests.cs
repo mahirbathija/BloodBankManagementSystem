@@ -1,10 +1,11 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using BloodBankManagementSystem.BLL;
 
 namespace BloodBankManagementSystem.Tests.BLL
 {
     [TestFixture]
-    public class donorBLLTests
+    public class DonorBLLTests
     {
         [Test]
         [TestCase(1, "Ralph", "Chow", "ralph@gmail.com", "46794567890", "Male", "12 Trevor St", "A+", "2023-05-29", "image.jpg", 1)]

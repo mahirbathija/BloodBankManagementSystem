@@ -4,7 +4,7 @@ using BloodBankManagementSystem.BLL;
 namespace BloodBankManagementSystem.Tests.BLL
 {
     [TestFixture]
-    public class loginBLL_Tests
+    public class LoginBLLTests
     {
         [Test]
         [TestCase("username", "password")]
