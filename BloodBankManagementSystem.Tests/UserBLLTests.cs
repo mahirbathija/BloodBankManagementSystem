@@ -10,6 +10,8 @@ namespace BloodBankManagementSystem.Test
         [TestCase(1, "MatthewStephen", "matthewstephen@gmail.com", "password090", "Matthew Stephen", "49745673456", "12 Madison St", "2023-05-19", "matthew.jpg")]
         [TestCase(2, "JackJohn", "jackjohn@yahoo.com", "password438", "JackJohn", "9987234435", "56 Marina St", "2023-04-30", "jack.jpg")]
         [TestCase(3,"JatinRathore","jatin@gmail.com", "password348", "JatinRathore","8865438898","97 Anderson St","2023-05-12","jatin.jpg")]
+        [TestCase(4, "", "polly@gmail.com", "password348", "MackPolly", "886543458", "97 Aldy St", "2023-06-12", "polly.jpg")]
+        [TestCase(5, "", "jackson@gmail.com", " ", "MaryJackson", "884542345", "72 Cambrige St", "2023-07-12", "mary.jpg")]
         public void userBLLConstructorTest(int user_id, string username, string email, string password, string full_name, string contact, string address, string added_date, string image_name)
         {
             userBLL user = new userBLL()
