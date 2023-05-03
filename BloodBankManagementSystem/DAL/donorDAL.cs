@@ -13,33 +13,51 @@ namespace BloodBankManagementSystem.DAL
 {
     class donorDAL
     {
+        //Create Static String to Connect Database
+        private IDbConnection conn;
+        private IDbDataAdapter adapter;
         //Create a Connection String to Connect Database
-        static string myconnstrng = ConfigurationManager.ConnectionStrings["connstrng"].ConnectionString;
+        public donorDAL(IDbConnection conn, IDbDataAdapter adapter)
+        {
+            this.conn = conn;
+            this.adapter = adapter;
+        }
+        public donorDAL()
+        {
+            string myconnstrng = ConfigurationManager.ConnectionStrings["connstrng"].ConnectionString;
+
+            //Connecting DAtabase
+            conn = new SqlConnection(myconnstrng);
+            adapter = new SqlDataAdapter();
+        }
+
         #region SELECT to display data in DataGridView from database
         public DataTable Select()
         {
-            // Create object to DataTAble to hold the data from database and return it
-            DataTable dt = new DataTable();
+            //Dataset to Hold the data from database temporarily
+            var dataSet = new DataSet();
 
-            //Create object of SQL Connection to Connect DAtabase
-            SqlConnection conn = new SqlConnection(myconnstrng);
 
             try
             {
                 //Write SQL Query to SElect the DAta from DAtabase
                 string sql = "SELECT * FROM tbl_donors";
 
-                //Create the SQlCommand to Execute the Query
-                SqlCommand cmd = new SqlCommand(sql, conn);
-
-                //Create SQl DAta Adapter to Hold the Data Temporarily
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
 
                 //open Database Connection
                 conn.Open();
 
-                //Pass the Data from adapter to DataTable
-                adapter.Fill(dt);
+                //SQl Data Adapter to Get the Data from Database
+                adapter.SelectCommand = cmd;
+
+                
+
+                //Fill the data from adapter to dataset
+               adapter.Fill(dataSet); 
+
             }
             catch(Exception ex)
             {
@@ -51,8 +69,9 @@ namespace BloodBankManagementSystem.DAL
                 //Close Database Connection
                 conn.Close();
             }
-
-            return dt;
+            DataTable myTable = dataSet.Tables[0];
+            return myTable;
+            
         }
         #endregion
         #region INSERT data to database
@@ -61,31 +80,86 @@ namespace BloodBankManagementSystem.DAL
             //Create a Boolean Variable and SEt its default value to false
             bool isSuccess = false;
 
-            //Create SqlConnection to Connect Database
-            SqlConnection conn = new SqlConnection(myconnstrng);
 
             try
             {
                 //Write the Query to INSERT data into database
                 string sql = "INSERT INTO tbl_donors (first_name, last_name, email, contact, gender, address, blood_group, added_date, image_name, added_by) VALUES (@first_name, @last_name, @email, @contact, @gender, @address, @blood_group, @added_date, @image_name, @added_by)";
 
-                //Create SQL Command to Execute the Query
-                SqlCommand cmd = new SqlCommand(sql, conn);
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
 
-                //Pass the value to SQL Query
-                cmd.Parameters.AddWithValue("@first_name", d.first_name);
-                cmd.Parameters.AddWithValue("@last_name", d.last_name);
-                cmd.Parameters.AddWithValue("@email", d.email);
-                cmd.Parameters.AddWithValue("@contact", d.contact);
-                cmd.Parameters.AddWithValue("@gender", d.gender);
-                cmd.Parameters.AddWithValue("@address", d.address);
-                cmd.Parameters.AddWithValue("@blood_group", d.blood_group);
-                cmd.Parameters.AddWithValue("@added_date", d.added_date);
-                cmd.Parameters.AddWithValue("@image_name", d.image_name);
-                cmd.Parameters.AddWithValue("@added_by", d.added_by);
+
+                //Pass the value to SQL Query Using Parameters
+                var first_nameParameter = cmd.CreateParameter();
+                first_nameParameter.ParameterName = "@first_name";
+                first_nameParameter.Value = d.first_name;
+                cmd.Parameters.Add(first_nameParameter);
+
+                var last_nameParameter = cmd.CreateParameter();
+                last_nameParameter.ParameterName = "@last_name";
+                last_nameParameter.Value = d.last_name;
+                cmd.Parameters.Add(last_nameParameter);
+
+               
+                var emailParameter = cmd.CreateParameter();
+                emailParameter.ParameterName = "@email";
+                emailParameter.Value = d.email;
+                cmd.Parameters.Add(emailParameter);
+
+               
+                var contactParameter = cmd.CreateParameter();
+                contactParameter.ParameterName = "@contact";
+                contactParameter.Value = d.contact;
+                cmd.Parameters.Add(contactParameter);
+
+                
+                var genderParameter = cmd.CreateParameter();
+                genderParameter.ParameterName = "@gender";
+                genderParameter.Value = d.gender;
+                cmd.Parameters.Add(genderParameter);
+                
+                
+                var addressParameter = cmd.CreateParameter();
+                addressParameter.ParameterName = "@address";
+                addressParameter.Value = d.address;
+                cmd.Parameters.Add(addressParameter);
+
+               
+                var blood_groupParameter = cmd.CreateParameter();
+                blood_groupParameter.ParameterName = "@blood_group";
+                blood_groupParameter.Value = d.blood_group;
+                cmd.Parameters.Add(blood_groupParameter);
+
+
+                
+                var added_dateParameter = cmd.CreateParameter();
+                added_dateParameter.ParameterName = "@added_date";
+                added_dateParameter.Value = d.added_date;
+                cmd.Parameters.Add(added_dateParameter);
+
+                
+                var imageParameter = cmd.CreateParameter();
+                imageParameter.ParameterName = "@image_name";
+                imageParameter.Value = d.image_name;
+                cmd.Parameters.Add(imageParameter);
+
+
+                
+                var added_byParameter = cmd.CreateParameter();
+                added_byParameter.ParameterName = "@added_by";
+                added_byParameter.Value = d.added_by;
+                cmd.Parameters.Add(added_byParameter);
+
 
                 //Open DAtabase Connection
                 conn.Open();
+
+                //SQl Data Adapter to Get the Data from Database
+                adapter.SelectCommand = cmd;
+
+                
 
                 //Create an Integer Variable to Check whether the query was executed Successfully or Not
                 int rows = cmd.ExecuteNonQuery();
@@ -121,28 +195,82 @@ namespace BloodBankManagementSystem.DAL
         {
             //Create a Boolean Variable and SEt its Default Value to FAlse
             bool isSuccess = false;
-            //Create SQLConnection to Connect DAtabase
-            SqlConnection conn = new SqlConnection(myconnstrng);
+          
 
             try
             {
                 //Create a SQL Query to Update Donors
                 string sql = "UPDATE tbl_donors SET first_name=@first_name, last_name=@last_name, email=@email, contact=@contact, gender=@gender, address=@address, blood_group=@blood_group, image_name=@image_name, added_by=@added_by WHERE donor_id=@donor_id";
 
-                //Create SQL Command Here
-                SqlCommand cmd = new SqlCommand(sql, conn);
 
-                //Pass the Value to SQL Query
-                cmd.Parameters.AddWithValue("@first_name", d.first_name);
-                cmd.Parameters.AddWithValue("@last_name", d.last_name);
-                cmd.Parameters.AddWithValue("@email", d.email);
-                cmd.Parameters.AddWithValue("@contact", d.contact);
-                cmd.Parameters.AddWithValue("@gender", d.gender);
-                cmd.Parameters.AddWithValue("@address", d.address);
-                cmd.Parameters.AddWithValue("@blood_group", d.blood_group);
-                cmd.Parameters.AddWithValue("@image_name", d.image_name);
-                cmd.Parameters.AddWithValue("@added_by", d.added_by);
-                cmd.Parameters.AddWithValue("@donor_id", d.donor_id);
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+
+
+                
+                var first_nameParameter = cmd.CreateParameter();
+                first_nameParameter.ParameterName = "@first_name";
+                first_nameParameter.Value = d.first_name;
+                cmd.Parameters.Add(first_nameParameter);
+
+               
+                var last_nameParameter = cmd.CreateParameter();
+                last_nameParameter.ParameterName = "@last_name";
+                last_nameParameter.Value = d.last_name;
+                cmd.Parameters.Add(last_nameParameter);
+
+               
+                var emailParameter = cmd.CreateParameter();
+                emailParameter.ParameterName = "@email";
+                emailParameter.Value = d.email;
+                cmd.Parameters.Add(emailParameter);
+
+                
+                var contactParameter = cmd.CreateParameter();
+                contactParameter.ParameterName = "@contact";
+                contactParameter.Value = d.contact;
+                cmd.Parameters.Add(contactParameter);
+
+                
+                var genderParameter = cmd.CreateParameter();
+                genderParameter.ParameterName = "@gender";
+                genderParameter.Value = d.gender;
+                cmd.Parameters.Add(genderParameter);
+
+                
+                var addressParameter = cmd.CreateParameter();
+                addressParameter.ParameterName = "@address";
+                addressParameter.Value = d.address;
+                cmd.Parameters.Add(addressParameter);
+
+                
+                var blood_groupParameter = cmd.CreateParameter();
+                blood_groupParameter.ParameterName = "@blood_group";
+                blood_groupParameter.Value = d.blood_group;
+                cmd.Parameters.Add(blood_groupParameter);
+
+
+               
+                var donor_idParameter = cmd.CreateParameter();
+                donor_idParameter.ParameterName = "@donor_id";
+                donor_idParameter.Value = d.donor_id;
+                cmd.Parameters.Add(donor_idParameter);
+
+               
+                var imageParameter = cmd.CreateParameter();
+                imageParameter.ParameterName = "@image_name";
+                imageParameter.Value = d.image_name;
+                cmd.Parameters.Add(imageParameter);
+
+
+               
+                var added_byParameter = cmd.CreateParameter();
+                added_byParameter.ParameterName = "@added_by";
+                added_byParameter.Value = d.added_by;
+                cmd.Parameters.Add(added_byParameter);
+
+      
 
                 //Open Database Connection
                 conn.Open();
@@ -181,28 +309,31 @@ namespace BloodBankManagementSystem.DAL
         {
             //Create a Boolean variable and set its default value to false
             bool isSuccess = false;
-            //Create SqlConnection To Connect DAtabase
-            SqlConnection conn = new SqlConnection(myconnstrng);
-
             try
             {
                 //Write the Query to Delete Donors from Database
                 string sql = "DELETE FROM tbl_donors WHERE donor_id=@donor_id";
 
-                //Create SQL Command
-                SqlCommand cmd = new SqlCommand(sql, conn);
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
 
-                //Pass the Value to Sql Query using Parameters
-                cmd.Parameters.AddWithValue("@donor_id", d.donor_id);
+
+                //Pass the value to SQL Query Using Parameters
+                var donorParameter = cmd.CreateParameter();
+                donorParameter.ParameterName = "@donor_id";
+                donorParameter.Value = d.donor_id;
+                cmd.Parameters.Add(donorParameter);
 
                 //Open Database Connection
                 conn.Open();
 
-                //Create an Integer VAriable to Check whether the query executed Successfully or Not
+                //Create an Integer Variable to check whether the query executed Successfully or not
                 int rows = cmd.ExecuteNonQuery();
 
+
                 //If the Query executed succesfully then the value of rows will be greater than 0 else it will be 0
-                if(rows>0)
+                if (rows>0)
                 {
                     //Query Executed Successfully
                     isSuccess = true;
@@ -231,8 +362,7 @@ namespace BloodBankManagementSystem.DAL
         #region Count Donors for Specific Blood Group
         public string countDonors(string blood_group)
         {
-            //Create SQL Connection for Database Connection
-            SqlConnection conn = new SqlConnection(myconnstrng);
+         
 
             //Create astring variable for donor count and set its default value to 0
             string donors = "0";
@@ -242,20 +372,31 @@ namespace BloodBankManagementSystem.DAL
                 //SQL Query to Count donors for Specific Blood Group
                 string sql = "SELECT * FROM tbl_donors WHERE blood_group = '"+ blood_group +"'";
 
-                //Sql Command to Execute Query
-                SqlCommand cmd = new SqlCommand(sql, conn);
+                //Create SQL Command to Pass the value to SQL Query
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
 
-                //Sql Data Adapter to Get the data from DAtabase
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                //SQl Data Adapter to Get the Data from Database
+                adapter.SelectCommand = cmd;
 
-                //Databale to Hold the DAta Temporarily
-                DataTable dt = new DataTable();
+                //Dataset to Hold the data from database temporarily
+                var dataSet = new DataSet();
 
-                //Pass tehe value from SqlDataAdapter to DataTable
-                adapter.Fill(dt);
+                //Fill the data from adapter to dataset
+                var  dataFound = adapter.Fill(dataSet);
+
+                int totalRows = 0;
+                foreach (DataTable table in dataSet.Tables)
+                {
+                    totalRows += table.Rows.Count;
+                }
 
                 //Get the Total Number of Donors Based on Blood Group
-                donors = dt.Rows.Count.ToString();
+                donors = totalRows.ToString();
+
+               
+           
             }
             catch(Exception ex)
             {
@@ -275,11 +416,11 @@ namespace BloodBankManagementSystem.DAL
         #region Method to Search Donors
         public DataTable Search(string keywords)
         {
-            //1. SQL Connection to Connect DAtabase
-            SqlConnection conn = new SqlConnection(myconnstrng);
 
-            //2. Create DataTable to hold the data Temporarily
-            DataTable dt = new DataTable();
+
+
+            //Dataset to Hold the data from database temporarily
+            var dataSet = new DataSet();
 
             try
             {
@@ -287,17 +428,27 @@ namespace BloodBankManagementSystem.DAL
                 //Write SQL Query to SEarch Donors
                 string sql = "SELECT * FROM tbl_donors WHERE donor_id LIKE '%"+ keywords +"%' OR first_name LIKE '%"+keywords+"%' OR last_name LIKE '"+keywords+"' OR email LIKE '%"+ keywords +"%' OR blood_group LIKE '"+keywords+"'";
 
-                //Create SQL Command to Execute the Query
-                SqlCommand cmd = new SqlCommand(sql, conn);
 
-                //SQlDataAdapter to Save Data from Database
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                //Create SQL Command to Pass the value to SQL Query
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+
 
                 //Open Database Connection
                 conn.Open();
 
-                //Transfer the Data from SQL Data Adapter to DataTable
-                adapter.Fill(dt);
+                //SQl Data Adapter to Get the Data from Database
+                adapter.SelectCommand = cmd;
+
+                
+
+                //Fill the data from adapter to dataset
+                var searchFound = adapter.Fill(dataSet);
+
+               
+
+               
             }
             catch(Exception ex)
             {
@@ -310,7 +461,8 @@ namespace BloodBankManagementSystem.DAL
                 conn.Close();
             }
 
-            return dt;
+            DataTable myTable = dataSet.Tables[0];
+            return myTable;
         }
         #endregion
     }
