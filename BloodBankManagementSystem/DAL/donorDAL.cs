@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace BloodBankManagementSystem.DAL
 {
-    class donorDAL
+   public class donorDAL
     {
         //Create Static String to Connect Database
         private IDbConnection conn;
@@ -324,9 +324,6 @@ namespace BloodBankManagementSystem.DAL
                 donorParameter.ParameterName = "@donor_id";
                 donorParameter.Value = d.donor_id;
                 cmd.Parameters.Add(donorParameter);
-
-                //Open Database Connection
-                conn.Open();
 
                 //Create an Integer Variable to check whether the query executed Successfully or not
                 int rows = cmd.ExecuteNonQuery();
