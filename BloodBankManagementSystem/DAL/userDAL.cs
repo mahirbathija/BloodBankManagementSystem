@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace BloodBankManagementSystem.DAL
 {
-    class userDAL
+    public class userDAL
     {
         
         //Create Static String to Connect Database
