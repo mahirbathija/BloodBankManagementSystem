@@ -90,4 +90,10 @@ public class MockDatabase
         return mockUsers.Count;
     }
 
+    public int InsertUser(userBLL user)
+    {
+        mockUsers.Add(user);
+        return 1;
+    }
+
 }
