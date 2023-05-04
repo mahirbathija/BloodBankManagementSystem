@@ -87,9 +87,33 @@ public class UserDALTests
             return rowsInserted;
         });
 
-        userDAL.Insert(newUser);
+        var inserted = userDAL.Insert(newUser);
 
+        Assert.True(inserted);
         Assert.AreEqual(2, mockDatabase.mockUsers.Count);
         Assert.True(mockDatabase.mockUsers.Any(u => u.user_id == newUser.user_id));
+    }
+    
+    
+    [Test]
+    public void userDAL_Delete_CanDeleteUserCorrectly()
+    {
+        var mockDatabase = new MockDatabase();
+        
+        var userDAL = new userDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+
+        var userToDelete = mockDatabase.mockUsers.First();
+
+        mockDbCommand.Setup(m => m.ExecuteNonQuery()).Returns(() =>
+        {
+            var rowsDeleted = mockDatabase.DeleteUser(userToDelete.user_id);
+            return rowsDeleted;
+        });
+
+        var deleted = userDAL.Delete(userToDelete);
+        
+        Assert.True(deleted);
+        Assert.AreEqual(0, mockDatabase.mockUsers.Count);
+        Assert.False(mockDatabase.mockUsers.Any(u => u.user_id == userToDelete.user_id));
     }
 }
