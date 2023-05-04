@@ -13,34 +13,46 @@ namespace BloodBankManagementSystem.DAL
 {
     class userDAL
     {
-        //Create a Static String to Connect Database
-        static string myconnstrng = ConfigurationManager.ConnectionStrings["connstrng"].ConnectionString;
+        
+        //Create Static String to Connect Database
+        private IDbConnection conn;
+        private IDbDataAdapter adapter;
+        //Create a Connection String to Connect Database
+        public userDAL(IDbConnection conn, IDbDataAdapter adapter)
+        {
+            this.conn = conn;
+            this.adapter = adapter;
+        }
+        public userDAL()
+        {
+            string myconnstrng = ConfigurationManager.ConnectionStrings["connstrng"].ConnectionString;
+
+            //Connecting DAtabase
+            conn = new SqlConnection(myconnstrng);
+            adapter = new SqlDataAdapter();
+        }
 
         #region SELECT data from database
         public DataTable Select()
         {
-            //Create an Object to connect database
-            SqlConnection conn = new SqlConnection(myconnstrng);
-
             //Create a DataTable to Hold the Data from Database
-            DataTable dt = new DataTable();
+            var dataSet = new DataSet();
 
             try
             {
                 // WRite SQL Qery to Get Data from Database
-                String sql = "SELECT * FROM tbl_users";
+                string sql = "SELECT * FROM tbl_users";
 
                 //Create SQL Command to Execute Query
-                SqlCommand cmd = new SqlCommand(sql, conn);
-
-                //Create Sql Data Adapter to hold the data from database temporarily
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
 
                 //Open Database Connection
                 conn.Open();
 
                 //Transfer Data from SqlData Adapter to DataTable
-                adapter.Fill(dt);
+                adapter.Fill(dataSet);
             }
             catch(Exception ex)
             {
@@ -53,7 +65,8 @@ namespace BloodBankManagementSystem.DAL
                 conn.Close();
             }
 
-            return dt;
+            DataTable myTable = dataSet.Tables[0];
+            return myTable;
         }
         #endregion
 
@@ -62,9 +75,7 @@ namespace BloodBankManagementSystem.DAL
         {
             //Create a boolean variable and set its default value to false
             bool isSuccess = false;
-
-            //Create an Object of SqlConnection to connect Database
-            SqlConnection conn = new SqlConnection(myconnstrng);
+            
 
             try
             {
@@ -72,17 +83,43 @@ namespace BloodBankManagementSystem.DAL
                 String sql = "INSERT INTO tbl_users(username, email, password, full_name, contact, address, added_date, image_name) VALUES (@username, @email, @password, @full_name, @contact, @address, @added_date, @image_name)";
 
                 //Create a SQL Command to pass the value in our query
-                SqlCommand cmd = new SqlCommand(sql, conn);
-
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                
                 //Create the Parameter to pass get the value from UI and pass it on SQL Query above
-                cmd.Parameters.AddWithValue("@username", u.username);
-                cmd.Parameters.AddWithValue("@email", u.email);
-                cmd.Parameters.AddWithValue("@password", u.password);
-                cmd.Parameters.AddWithValue("@full_name", u.full_name);
-                cmd.Parameters.AddWithValue("@contact", u.contact);
-                cmd.Parameters.AddWithValue("@address", u.address);
-                cmd.Parameters.AddWithValue("@added_date", u.added_date);
-                cmd.Parameters.AddWithValue("@image_name", u.image_name);
+                var usernameParameter = cmd.CreateParameter();
+                usernameParameter.ParameterName = "@username";
+                usernameParameter.Value = u.username;
+                
+                var emailParameter = cmd.CreateParameter();
+                emailParameter.ParameterName = "@email";
+                emailParameter.Value = u.email;
+                
+                var passwordParameter = cmd.CreateParameter();
+                passwordParameter.ParameterName = "@password";
+                passwordParameter.Value = u.password;
+                
+                var full_nameParameter = cmd.CreateParameter();
+                full_nameParameter.ParameterName = "@full_name";
+                full_nameParameter.Value = u.full_name;
+                
+                var contactParameter = cmd.CreateParameter();
+                contactParameter.ParameterName = "@contact";
+                contactParameter.Value = u.contact;
+                
+                var addressParameter = cmd.CreateParameter();
+                addressParameter.ParameterName = "@address";
+                addressParameter.Value = u.address;
+                
+                var added_dateParameter = cmd.CreateParameter();
+                added_dateParameter.ParameterName = "@added_date";
+                added_dateParameter.Value = u.added_date;
+                
+                var image_nameParameter = cmd.CreateParameter();
+                image_nameParameter.ParameterName = "@image_name";
+                image_nameParameter.Value = u.image_name;
+                
 
                 //Open Database Connection
                 conn.Open();
@@ -125,28 +162,53 @@ namespace BloodBankManagementSystem.DAL
             //Create a Boolean variable and set its default value to false
             bool isSuccess = false;
 
-            //Create an Object for Database Connection
-            SqlConnection conn = new SqlConnection(myconnstrng);
-
             try
             {
                 //Create a string variable to hold the sql query
                 string sql = "UPDATE tbl_users SET username=@username, email=@email, password=@password, full_name=@full_name, contact=@contact, address=@address, added_date=@added_date, image_name=@image_name WHERE user_id=@user_id";
 
                 //Create Sql Command to execute query and also pass the values to sql query
-                SqlCommand cmd = new SqlCommand(sql, conn);
-
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                
                 //Now Pass the values to SQL Query
-                cmd.Parameters.AddWithValue("@username", u.username);
-                cmd.Parameters.AddWithValue("@email", u.email);
-                cmd.Parameters.AddWithValue("@password", u.password);
-                cmd.Parameters.AddWithValue("@full_name", u.full_name);
-                cmd.Parameters.AddWithValue("@contact", u.contact);
-                cmd.Parameters.AddWithValue("@address", u.address);
-                cmd.Parameters.AddWithValue("@added_date", u.added_date);
-                cmd.Parameters.AddWithValue("@image_name", u.image_name);
-                cmd.Parameters.AddWithValue("@user_id", u.user_id);
-
+                var usernameParameter = cmd.CreateParameter();
+                usernameParameter.ParameterName = "@username";
+                usernameParameter.Value = u.username;
+                
+                var emailParameter = cmd.CreateParameter();
+                emailParameter.ParameterName = "@email";
+                emailParameter.Value = u.email;
+                
+                var passwordParameter = cmd.CreateParameter();
+                passwordParameter.ParameterName = "@password";
+                passwordParameter.Value = u.password;
+                
+                var full_nameParameter = cmd.CreateParameter();
+                full_nameParameter.ParameterName = "@full_name";
+                full_nameParameter.Value = u.full_name;
+                
+                var contactParameter = cmd.CreateParameter();
+                contactParameter.ParameterName = "@contact";
+                contactParameter.Value = u.contact;
+                
+                var addressParameter = cmd.CreateParameter();
+                addressParameter.ParameterName = "@address";
+                addressParameter.Value = u.address;
+                
+                var added_dateParameter = cmd.CreateParameter();
+                added_dateParameter.ParameterName = "@added_date";
+                added_dateParameter.Value = u.added_date;
+                
+                var image_nameParameter = cmd.CreateParameter();
+                image_nameParameter.ParameterName = "@image_name";
+                image_nameParameter.Value = u.image_name;
+                
+                var user_idParameter = cmd.CreateParameter();
+                user_idParameter.ParameterName = "@user_id";
+                user_idParameter.Value = u.user_id;
+                
                 //open Database Connection
                 conn.Open();
 
@@ -189,19 +251,20 @@ namespace BloodBankManagementSystem.DAL
             //Create a boolean variable and set its default value to false
             bool isSuccess = false;
 
-            //Create an object for SqlConnection
-            SqlConnection conn = new SqlConnection(myconnstrng);
-
             try
             {
                 //Create a string variable to hold the sql query to delete data
                 String sql = "DELETE FROM tbl_users WHERE user_id=@user_id";
 
                 //Create Sql Command to Execute the Query
-                SqlCommand cmd = new SqlCommand(sql, conn);
-
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                
                 //Pass the value thorugh parameters
-                cmd.Parameters.AddWithValue("@user_id", u.user_id);
+                var user_idParameter = cmd.CreateParameter();
+                user_idParameter.ParameterName = "@user_id";
+                user_idParameter.Value = u.user_id;
 
                 //Open the DAtabase Connection
                 conn.Open();
@@ -242,11 +305,9 @@ namespace BloodBankManagementSystem.DAL
         #region SEARCH
         public DataTable Search(string keywords)
         {
-            //1. Create an SQL Connection to connect database
-            SqlConnection conn = new SqlConnection(myconnstrng);
 
-            // 2. Create Data Table to Hold the data from database temporarily
-            DataTable dt = new DataTable();
+            //Dataset to Hold the data from database temporarily
+            var dataSet = new DataSet();
 
             //Write the Code to SEarh the Users
             try
@@ -255,15 +316,17 @@ namespace BloodBankManagementSystem.DAL
                 String sql = "SELECT * FROM tbl_users WHERE user_id LIKE '%" + keywords + "%' OR full_name LIKE '%" + keywords + "%' OR address LIKE '%" + keywords + "%'";
 
                 //Create SQL Command to Execute the Query
-                SqlCommand cmd = new SqlCommand(sql, conn);
-
-                //Create SQL DAta Adapter to Get the DAta from Database
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                
+                adapter.SelectCommand = cmd;
 
                 //open Database Connetion
                 conn.Open();
+                
                 //Pass the data from adapter to dataTable
-                adapter.Fill(dt);
+                adapter.Fill(dataSet); 
             }
             catch(Exception ex)
             {
@@ -276,7 +339,8 @@ namespace BloodBankManagementSystem.DAL
                 conn.Close();
             }
 
-            return dt;
+            DataTable myTable = dataSet.Tables[0];
+            return myTable;
         }
         #endregion
 
@@ -285,30 +349,31 @@ namespace BloodBankManagementSystem.DAL
         public userBLL GetIDFromUsername(string username)
         {
             userBLL u = new userBLL();
-
-            //Create SQL Connecction to Connect Database
-            SqlConnection conn = new SqlConnection(myconnstrng);
-
-            //DataTable to hold the data from database temporarily
-            DataTable dt = new DataTable();
+            
+            //Dataset to Hold the data from database temporarily
+            var dataSet = new DataSet();
 
             try
             {
                 //SQL Query to get the ID from USERNAME
                 string sql = "SELECT user_id FROM tbl_users WHERE username='"+ username +"'";
 
-                //Create SQL Data Adapter
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                
+                adapter.SelectCommand = cmd;
+
                 //Open Database Connection
                 conn.Open();
 
                 //Fill the data in dataTable from Adapter
-                adapter.Fill(dt);
+                var usersFound = adapter.Fill(dataSet);
 
                 //If there's user based on the username then get the user_id
-                if(dt.Rows.Count>0)
+                if(usersFound > 0)
                 {
-                    u.user_id = int.Parse(dt.Rows[0]["user_id"].ToString());
+                    u.user_id = int.Parse(dataSet.Tables[0].Rows[0]["user_id"].ToString());
                 }
             }
             catch(Exception ex)
