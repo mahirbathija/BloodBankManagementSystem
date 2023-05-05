@@ -87,9 +87,80 @@ public class UserDALTests
             return rowsInserted;
         });
 
-        userDAL.Insert(newUser);
+        var inserted = userDAL.Insert(newUser);
 
+        Assert.True(inserted);
         Assert.AreEqual(2, mockDatabase.mockUsers.Count);
         Assert.True(mockDatabase.mockUsers.Any(u => u.user_id == newUser.user_id));
+    }
+    
+    
+    [Test]
+    public void userDAL_Delete_CanDeleteUserCorrectly()
+    {
+        var mockDatabase = new MockDatabase();
+        
+        var userDAL = new userDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+
+        var userToDelete = mockDatabase.mockUsers.First();
+
+        mockDbCommand.Setup(m => m.ExecuteNonQuery()).Returns(() =>
+        {
+            var rowsDeleted = mockDatabase.DeleteUser(userToDelete.user_id);
+            return rowsDeleted;
+        });
+
+        var deleted = userDAL.Delete(userToDelete);
+        
+        Assert.True(deleted);
+        Assert.AreEqual(0, mockDatabase.mockUsers.Count);
+        Assert.False(mockDatabase.mockUsers.Any(u => u.user_id == userToDelete.user_id));
+    }
+    
+    [Test]
+    public void userDAL_Update_CanUpdateUserCorrectly()
+    {
+        var mockDatabase = new MockDatabase();
+        
+        var userDAL = new userDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+
+        var userToUpdate = mockDatabase.mockUsers.First();
+
+        var updatedDateTime = DateTime.Now;
+
+        var userWithUpdatedValues = new userBLL
+        {
+            user_id = userToUpdate.user_id,
+            username = "updated_username",
+            email = "updated_email" ,
+            password = "updated_password" ,
+            full_name = "updated_full_name" ,
+            contact = "updated_contact" ,
+            address = "updated_address" ,
+            added_date = updatedDateTime,
+            image_name = "updated_image_name" 
+        };
+
+        mockDbCommand.Setup(m => m.ExecuteNonQuery()).Returns(() =>
+        {
+            var rowsUpdated = mockDatabase.UpdateUser(userWithUpdatedValues);
+            return rowsUpdated;
+        });
+
+        var updated = userDAL.Update(userToUpdate);
+
+        var updatedMockUser = mockDatabase.mockUsers.First(u => u.user_id == userToUpdate.user_id);
+        
+        Assert.True(updated);
+        Assert.AreEqual(1, mockDatabase.mockUsers.Count);
+        Assert.True(mockDatabase.mockUsers.Any(u => u.user_id == updatedMockUser.user_id));
+        Assert.AreEqual(userWithUpdatedValues.username, updatedMockUser.username);
+        Assert.AreEqual(userWithUpdatedValues.email, updatedMockUser.email);
+        Assert.AreEqual(userWithUpdatedValues.password, updatedMockUser.password);
+        Assert.AreEqual(userWithUpdatedValues.full_name, updatedMockUser.full_name);
+        Assert.AreEqual(userWithUpdatedValues.contact, updatedMockUser.contact);
+        Assert.AreEqual(userWithUpdatedValues.address, updatedMockUser.address);
+        Assert.AreEqual(userWithUpdatedValues.added_date, updatedMockUser.added_date);
+        Assert.AreEqual(userWithUpdatedValues.image_name, updatedMockUser.image_name); 
     }
 }
