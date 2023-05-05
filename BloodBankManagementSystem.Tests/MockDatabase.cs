@@ -4,6 +4,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using BloodBankManagementSystem.BLL;
+using BloodBankManagementSystem.DAL;
 
 namespace BloodBankManagementSystem.Tests;
 
@@ -164,8 +165,8 @@ public class MockDatabase
 
     public MockDatabase()
     {
-        this.mockDonors = initialMockDonors;
-        this.mockUsers = initialMockUsers;
+        this.mockDonors = new List<donorBLL>(initialMockDonors);
+        this.mockUsers = new List<userBLL>(initialMockUsers);
     }
 
     public void ResetMockUsers()
