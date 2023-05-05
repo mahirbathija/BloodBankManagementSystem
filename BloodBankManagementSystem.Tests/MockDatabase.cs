@@ -167,7 +167,6 @@ public class MockDatabase
     {
         this.mockDonors = new List<donorBLL>(initialMockDonors);
         this.mockUsers = new List<userBLL>(initialMockUsers);
-
     }
 
     public void ResetMockUsers()
