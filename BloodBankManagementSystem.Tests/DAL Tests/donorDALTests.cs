@@ -203,25 +203,33 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
         [Test]
         //Donor Id
         [TestCase("6", ExpectedResult =1, TestName = "Search_Returns_value_exist(6)")]
-        [TestCase("1",ExpectedResult =0,TestName ="Search_Returns_value_doesnotexist(1)")]
+        [TestCase("1",ExpectedResult =1,TestName ="Search_Returns_value_exist(1)")]
+        [TestCase("-1", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(-1)")]
+        [TestCase("0", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(0)")]
+        [TestCase("100", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(100)")]
 
         //First Name
         [TestCase("abc", ExpectedResult = 1, TestName = "Search_Returns_value_exist(abc)")]
-        [TestCase("pol", ExpectedResult = 0, TestName = "Search_Returns_value_doesnotexist(pol)")]
+        [TestCase("pol", ExpectedResult = 1, TestName = "Search_Returns_value_exist(pol)")]
+        [TestCase("nidhan", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(nidhan)")]
 
         //Last Name
         [TestCase("Robinson", ExpectedResult = 1, TestName = "Search_Returns_value_exist(Robinson)")]
-        [TestCase("fgh", ExpectedResult = 0, TestName = "Search_Returns_value_doesnotexist(fgh)")]
+        [TestCase("fgh", ExpectedResult = 1, TestName = "Search_Returns_value_exist(fgh)")]
+        [TestCase("xyz", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(xyz)")]
 
         //Email
         [TestCase("jai@gmail.com", ExpectedResult = 1, TestName = "Search_Returns_value_exist(jai@gmail.com)")]
-        [TestCase("iop@seattleu.edu", ExpectedResult = 0, TestName = "Search_Returns_value_doesnotexist(iop@seattleu.edu)")]
+        [TestCase("iop@seattleu.edu", ExpectedResult = 1, TestName = "Search_Returns_value_exist(iop@seattleu.edu)")]
+        [TestCase("nidhanbhatt@gmail.com", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(nidhanbhatt@gmail.com")]
        
         //  BloodGroup
-        [TestCase("B+", ExpectedResult = 1, TestName = "Search_Returns_value_exist(B+)")] 
+        [TestCase("B+", ExpectedResult = 2, TestName = "Search_Returns_value_exist(B+)")] 
         [TestCase("B-", ExpectedResult = 2, TestName = "Search_Returns_value_exist(B-)")]
-        [TestCase("O-", ExpectedResult = 0, TestName = "Search_Returns_value_doesnotexist(O-)")]
-        [TestCase("AB+", ExpectedResult = 0, TestName = "Search_Returns_value_doesnotexist(AB+)")]
+        [TestCase("O-", ExpectedResult = 2, TestName = "Search_Returns_value_exist(O-)")]
+        [TestCase("AB+", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(AB+)")]
+        [TestCase("AB-", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(AB-)")]
+        [TestCase("F+", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(F+)")]
 
         public int SearchDonor(String Keyword)
         {
