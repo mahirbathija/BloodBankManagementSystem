@@ -5,6 +5,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,159 +44,196 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
 
         [Test]
         [TestCase(1, ExpectedResult = true, TestName = "DonorDAL_check_true_Available_inTable(1)")]
+        [TestCase(2, ExpectedResult = true, TestName = "DonorDAL_check_true_Available_inTable(2)")]
+        [TestCase(3, ExpectedResult = true, TestName = "DonorDAL_check_true_Available_inTable(3)")]
+        [TestCase(4, ExpectedResult = true, TestName = "DonorDAL_check_true_Available_inTable(4)")]
+        [TestCase(5, ExpectedResult = true, TestName = "DonorDAL_check_true_Available_inTable(5)")]
         public Boolean DonorDALDelete_Success(int Donor_id)
         {
+            //Mock Database
+            var mockDatabase = new MockDatabase();
+            //Donor dal
+            var Donordal = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
 
             // Setup the mock IDbConnection to return the mock IDbCommand
             mockDbConnection.Setup(x => x.CreateCommand()).Returns(mockDbCommand.Object);
 
-            // Setup the mock IDbCommand to return the mock IDataParameterCollection
-            mockDbCommand.Setup(x => x.Parameters).Returns(mockDataParameterCollection.Object);
-
-            IList<donorBLL> donors = new List<donorBLL>
-                {
-                    new()
-                    {
-                       donor_id=Donor_id,
-                       first_name="test",
-                       last_name="test",
-                       email="test",
-                       contact="test",
-                       gender="male",
-                       address="test",
-                       blood_group="O+",
-                       added_date=DateTime.Now,
-                       image_name="test",
-                       added_by=1
-
-                    }
-                };
-
-            if (donors.Any(d => d.donor_id == Donor_id))
+            donorBLL donors = new donorBLL
             {
 
-                // Setup the mock IDbCommand to return a value of 1 when ExecuteNonQuery is called
-                mockDbCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
-            }
+                donor_id = Donor_id,
+                first_name = "test",
+                last_name = "test",
+                email = "test",
+                contact = "test",
+                gender = "male",
+                address = "test",
+                blood_group = "O+",
+                added_date = DateTime.Now,
+                image_name = "test",
+                added_by = 1
+            };
 
+            mockDbCommand.Setup(m => m.ExecuteNonQuery()).Returns(() =>
+            {
+                var rowsInserted = mockDatabase.DeleteDonor(donors.donor_id);
+                return rowsInserted;
+            });
 
             var donor = new donorBLL { donor_id = Donor_id };
 
-            var dal = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
             // Act
-            var result = dal.Delete(donor);
+            var result = Donordal.Delete(donor);
             // Assert
             return result;
         }
 
 
         [Test]
-        [TestCase(2, ExpectedResult = false, TestName = "DonorDAL_check_false_NotAvailable_inTable(2)")]
+        [TestCase(-1, ExpectedResult = false, TestName = "DonorDAL_check_false_NotAvailable_inTable(-1)")]
+        [TestCase(0, ExpectedResult = false, TestName = "DonorDAL_check_false_NotAvailable_inTable(0)")]
+        [TestCase(-2, ExpectedResult = false, TestName = "DonorDAL_check_false_NotAvailable_inTable(-2)")]
+        [TestCase(10, ExpectedResult = false, TestName = "DonorDAL_check_false_NotAvailable_inTable(10)")]
+        [TestCase(100, ExpectedResult = false, TestName = "DonorDAL_check_false_NotAvailable_inTable(100)")]
+        [TestCase(11, ExpectedResult = false, TestName = "DonorDAL_check_false_NotAvailable_inTable(11)")]
+
         public Boolean DonorDALDelete_Failure(int Donor_id)
         {
 
+            //Mock Database
+            var mockDatabase = new MockDatabase();
+            //Donor dal
+            var Donordal = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+
             // Setup the mock IDbConnection to return the mock IDbCommand
             mockDbConnection.Setup(x => x.CreateCommand()).Returns(mockDbCommand.Object);
 
-            // Setup the mock IDbCommand to return the mock IDataParameterCollection
-            mockDbCommand.Setup(x => x.Parameters).Returns(mockDataParameterCollection.Object);
 
-            IList<donorBLL> donors = new List<donorBLL>
-                {
-                    new()
-                    {
-                       donor_id=-1,
-                       first_name="test",
-                       last_name="test",
-                       email="test",
-                       contact="test",
-                       gender="male",
-                       address="test",
-                       blood_group="O+",
-                       added_date=DateTime.Now,
-                       image_name="test",
-                       added_by=1
-
-                    }
-                };
-
-            if (donors.Any(d => d.donor_id != Donor_id))
+            donorBLL donors = new donorBLL
             {
-                // Setup the mock IDbCommand to return a value of 0 when ExecuteNonQuery is called
-                mockDbCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
-            }
+
+                donor_id = Donor_id,
+                first_name = "test",
+                last_name = "test",
+                email = "test",
+                contact = "test",
+                gender = "male",
+                address = "test",
+                blood_group = "O+",
+                added_date = DateTime.Now,
+                image_name = "test",
+                added_by = 1
+
+
+            };
+
+
+            mockDbCommand.Setup(m => m.ExecuteNonQuery()).Returns(() =>
+            {
+                var rowsInserted = mockDatabase.DeleteDonor(donors.donor_id);
+                return rowsInserted;
+            });
 
             var donor = new donorBLL { donor_id = Donor_id };
 
-            var dal = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
-
             // Act
-            var result = dal.Delete(donor);
-
+            var result = Donordal.Delete(donor);
             // Assert
             return result;
+
         }
 
+
+
+
         [Test]
-        [TestCase("A+",ExpectedResult ="2",TestName ="CountDonors_ReturnsCorrectValue(A+)")]
+        [TestCase("A-", ExpectedResult = "1", TestName = "CountDonors_ReturnsCorrectValue(A-)")]
+        [TestCase("B+", ExpectedResult = "2", TestName = "CountDonors_ReturnsCorrectValue(B+)")]
+        [TestCase("B-", ExpectedResult = "2", TestName = "CountDonors_ReturnsCorrectValue(B-)")]
+        [TestCase("O+", ExpectedResult = "2", TestName = "CountDonors_ReturnsCorrectValue(O+)")]  
+        [TestCase("O-", ExpectedResult = "2", TestName = "CountDonors_ReturnsCorrectValue(O-)")]
         public String CountDonors_ReturnsCorrectValue(String bloodGroup)
         {
+            //Mock Database
+            var mockDatabase = new MockDatabase();
+            //Donor dal
+            var Donordal = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
 
-            var dataSet = new DataSet();
-            var table = new DataTable();
-            table.Columns.Add("donor_id", typeof(int));
-            table.Columns.Add("first_name", typeof(string));
-            table.Columns.Add("last_name", typeof(string));
-            table.Columns.Add("email", typeof(string));
-            table.Columns.Add("contact", typeof(string));
-            table.Columns.Add("gender", typeof(string));
-            table.Columns.Add("address", typeof(string));
-            table.Columns.Add("blood_group", typeof(string));
- 
+            // Setup the mock IDbConnection to return the mock IDbCommand
 
-            table.Rows.Add(1, "John","Smith","john@gmail.com","1234","Male", "abc",bloodGroup);
-            table.Rows.Add(2, "Jane","Smith","jane@gmail.com","4567","Male","def",bloodGroup);
-            dataSet.Tables.Add(table);
-            mockDbDataAdapter.Setup(a => a.Fill(It.IsAny<DataSet>())).Callback<DataSet>(ds => ds.Merge(dataSet));
-            var sut = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+            mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
+            {
+                var rowsCount = mockDatabase.FindDonorsByBloodGroup(dataSet, bloodGroup);
+                return rowsCount;
+            });
 
             // Act
-            var result = sut.countDonors(bloodGroup);
+            var result = Donordal.countDonors(bloodGroup);
             return result;
 
         }
 
         [Test]
-        [TestCase("A+", ExpectedResult = "0", TestName = "CountDonors_ReturnsIncorrectValue(A+)")]
-        public String CountDonors_ReturnsIncorrectValue(String bloodGroup)
+        [TestCase("A+", ExpectedResult = "0", TestName = "CountDonors_ReturnsZeroValue(A+)")]
+        [TestCase("AB+", ExpectedResult = "0", TestName = "CountDonors_ReturnsZeroValue(AB+)")]
+        [TestCase("AB-", ExpectedResult = "0", TestName = "CountDonors_ReturnsZeroValue(AB-)")]
+        public String CountDonors_ReturnsZerotValue(String bloodGroup)
         {
+            //Mock Database
+            var mockDatabase = new MockDatabase();
+            //Donor dal
+            var Donordal = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
 
-            var dataSet = new DataSet();
-            var table = new DataTable();
-            table.Columns.Add("donor_id", typeof(int));
-            table.Columns.Add("first_name", typeof(string));
-            table.Columns.Add("last_name", typeof(string));
-            table.Columns.Add("email", typeof(string));
-            table.Columns.Add("contact", typeof(string));
-            table.Columns.Add("gender", typeof(string));
-            table.Columns.Add("address", typeof(string));
-            table.Columns.Add("blood_group", typeof(string));
+            // Setup the mock IDbConnection to return the mock IDbCommand
 
-
-            if ("O+".Equals(bloodGroup))
+            mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
             {
-                table.Rows.Add(1, "John", "Smith", "john@gmail.com", "1234", "Male", "abc", "O+");
-                table.Rows.Add(2, "Jane", "Smith", "jane@gmail.com", "4567", "Male", "def", "O+");
-                dataSet.Tables.Add(table);
-            }
-            mockDbDataAdapter.Setup(a => a.Fill(It.IsAny<DataSet>())).Callback<DataSet>(ds => ds.Merge(dataSet));
-            var sut = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+                var rowsCount = mockDatabase.FindDonorsByBloodGroup(dataSet, bloodGroup);
+                return rowsCount;
+            });
 
             // Act
-            var result = sut.countDonors(bloodGroup);
+            var result = Donordal.countDonors(bloodGroup);
             return result;
 
         }
+
+
+
+        [Test]
+        [TestCase("", ExpectedResult =4, TestName = "Search_ReturnscorrectValue_Donor_Id(1)")]
+        public int SearchDonor_Id(String Keyword)
+        {
+            //Mock Database
+            var mockDatabase = new MockDatabase();
+
+            var donor = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+
+            
+            mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
+            {
+                var donorSelected= mockDatabase.FindDonorsByKeyword(dataSet, Keyword);
+                return donorSelected;
+            });
+
+            var dataTable = donor.Search(Keyword);
+
+            Assert.NotNull(dataTable);
+
+            var donorsSelected = dataTable.Rows;
+            return donorsSelected.Count;
+
+          
+
+
+
+
+        }
+
+
+
+
+
 
 
     }
