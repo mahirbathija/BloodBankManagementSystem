@@ -164,3 +164,51 @@ public class UserDALTests
         Assert.AreEqual(userWithUpdatedValues.image_name, updatedMockUser.image_name); 
     }
 }
+[Test]
+public void TestSearchUserByKeyword()
+{
+    // Arrange
+    var dataSet = new DataSet();
+    var mockUsers = new List<User>
+    {
+        new User { user_id = 1, username = "rdoe", email = "rdoe@example.com", password = "password", full_name = "Ralph Doe", contact = "555-1234", address = "123 Main St", added_date = DateTime.Now, image_name = "rdoe.jpg" },
+        new User { user_id = 2, username = "msmith", email = "msmith@example.com", password = "password", full_name = "Mary Smith", contact = "555-5678", address = "456 Elm St", added_date = DateTime.Now, image_name = "msmith.jpg" },
+        new User { user_id = 3, username = "jwilliams", email = "jwilliams@example.com", password = "password", full_name = "James Williams", contact = "555-9012", address = "789 Oak St", added_date = DateTime.Now, image_name = "jwilliams.jpg" },
+    };
+    var keyword = "Smith";
+    var expectedCount = 1;
+
+    // Act
+    var target = new userDAL(mockUsers);
+    var actualCount = target.SearchUserByKeyword(dataSet, keyword);
+
+    // Assert
+    Assert.AreEqual(expectedCount, actualCount);
+    Assert.AreEqual(1, dataSet.Tables.Count);
+    Assert.AreEqual(1, dataSet.Tables[0].Rows.Count);
+    Assert.AreEqual("msmith", dataSet.Tables[0].Rows[0]["username"]);
+}
+
+[Test]
+public void TestGetIdFromUsername()
+{
+    // Arrange
+    var dataSet = new DataSet();
+    var mockUsers = new List<User>
+    {
+        new User { user_id = 1, username = "r.doe", email = "ralph.doe@example.com", password = "password123", full_name = "Ralph Doe", contact = "1234567890", address = "123 Main St", added_date = DateTime.Now, image_name = "ralph.jpg" },
+        new User { user_id = 2, username = "jane.doe", email = "jane.doe@example.com", password = "password456", full_name = "Jane Doe", contact = "0987654321", address = "456 Oak Ave", added_date = DateTime.Now, image_name = "jane.jpg" }
+    };
+    var keyword = "john.doe";
+    var expectedCount = 1;
+
+    var mockUserRepository = new Mock<IUserRepository>();
+    mockUserRepository.Setup(x => x.GetIdFromUsername(dataSet, keyword)).Returns(expectedCount);
+
+    // Act
+    var actualCount = mockUserRepository.Object.GetIdFromUsername(dataSet, keyword);
+
+    // Assert
+    Assert.AreEqual(expectedCount, actualCount);
+}
+
