@@ -37,7 +37,7 @@ public class UserDALTests
         mockDbConnection.Setup(m => m.CreateCommand()).Returns(mockDbCommand.Object);
     }
 
-    [Test]
+   [Test]
     public void userDAL_Select_CanSelectAllUsersCorrectly()
     {
         var mockDatabase = new MockDatabase();
@@ -58,7 +58,7 @@ public class UserDALTests
         var usersSelected = dataTable.Rows;
         
         Assert.NotNull(usersSelected);
-        Assert.Equals(mockDatabase.mockUsers.Count, usersSelected.Count);
+        Assert.AreEqual(mockDatabase.mockUsers.Count, usersSelected.Count);
     }
 
     [Test]
