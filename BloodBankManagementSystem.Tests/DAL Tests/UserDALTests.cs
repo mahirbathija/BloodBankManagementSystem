@@ -164,6 +164,7 @@ public class UserDALTests
         Assert.AreEqual(userWithUpdatedValues.image_name, updatedMockUser.image_name); 
     }
 }
+
 [Test]
 public void TestSearchUserByKeyword()
 {
@@ -171,7 +172,7 @@ public void TestSearchUserByKeyword()
     var dataSet = new DataSet();
     var mockUsers = new List<User>
     {
-        new User { user_id = 1, username = "rdoe", email = "rdoe@example.com", password = "password", full_name = "Ralph Doe", contact = "555-1234", address = "123 Main St", added_date = DateTime.Now, image_name = "rdoe.jpg" },
+        new User { user_id = 1, username = "pdoe", email = "pdoe@example.com", password = "password", full_name = "Peter Doe", contact = "555-1234", address = "123 Main St", added_date = DateTime.Now, image_name = "pdoe.jpg" },
         new User { user_id = 2, username = "msmith", email = "msmith@example.com", password = "password", full_name = "Mary Smith", contact = "555-5678", address = "456 Elm St", added_date = DateTime.Now, image_name = "msmith.jpg" },
         new User { user_id = 3, username = "jwilliams", email = "jwilliams@example.com", password = "password", full_name = "James Williams", contact = "555-9012", address = "789 Oak St", added_date = DateTime.Now, image_name = "jwilliams.jpg" },
     };
