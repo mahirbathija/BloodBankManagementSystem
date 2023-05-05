@@ -33,7 +33,7 @@ public class MockDatabase
 
     {
 
-        new ()
+             new ()
         {
             donor_id = 1,
             first_name = "iol",
@@ -47,7 +47,7 @@ public class MockDatabase
             image_name = "io_profile_picture",
             added_by = 2
         },
-         new ()
+             new ()
         {
             donor_id = 2,
             first_name = "pol",
@@ -61,7 +61,7 @@ public class MockDatabase
             image_name = "pol_profile_picture",
             added_by = 2
         },
-     new()
+      new()
      {
          donor_id = 3,
          first_name = "iop",
@@ -75,7 +75,7 @@ public class MockDatabase
          image_name = "iop_profile_picture",
          added_by = 1
      },
-         new()
+             new()
          {
              donor_id = 4,
              first_name = "aui",
@@ -89,9 +89,7 @@ public class MockDatabase
              image_name = "aui_profile_picture",
              added_by = 2
          },
-
-
-        new()
+             new()
         {
             donor_id = 5,
             first_name = "Mahir",
@@ -105,7 +103,7 @@ public class MockDatabase
             image_name = "mahir_profile_picture",
             added_by = 1
         },
-         new()
+             new()
         {
             donor_id = 6,
             first_name = "abc",
@@ -119,7 +117,7 @@ public class MockDatabase
             image_name = "abc_profile_picture",
             added_by = 1
         },
-     new()
+             new()
      {
          donor_id = 7,
          first_name = "Jame",
@@ -133,7 +131,7 @@ public class MockDatabase
          image_name = "jame_profile_picture",
          added_by = 1
      },
-         new()
+             new()
          {
              donor_id = 8,
              first_name = "jai",
@@ -147,7 +145,7 @@ public class MockDatabase
              image_name = "jai_profile_picture",
              added_by = 1
          },
-          new()
+             new()
          {
              donor_id = 9,
              first_name = "yfg",
@@ -160,7 +158,7 @@ public class MockDatabase
              added_date = DateTime.Now,
              image_name = "yfg_profile_picture",
              added_by = 3
-         },
+         }
 
     };
 
@@ -375,6 +373,7 @@ public class MockDatabase
         table.Columns.Add("added_date", typeof(DateTime));
         table.Columns.Add("image_name", typeof(string));
         table.Columns.Add("added_by", typeof(int));
+
 
         var matchingDonor = mockDonors.Where(d => 
         {
