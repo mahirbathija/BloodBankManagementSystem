@@ -45,6 +45,7 @@ namespace BloodBankManagementSystem.DAL
 
                 //Create SQL Command to Execute Query
                 var cmd = conn.CreateCommand();
+                adapter.SelectCommand = cmd;
                 cmd.CommandText = sql;
                 cmd.Connection = conn;
 
