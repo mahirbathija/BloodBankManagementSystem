@@ -304,6 +304,21 @@ public class MockDatabase
         return 1;
     }
     #endregion
+    public List<userDAL> SearchUserByKeyword(string keyword)
+    {
+        var results = new List<userDAL>();
+
+        foreach (var user in mockUsers)
+        {
+            if (user.username.Contains(keyword) || user.full_name.Contains(keyword) || user.email.Contains(keyword))
+            {
+                results.Add(user);
+
+            }
+           
+        }
+        return results;
+    }
 
     #region donorDAL
 
@@ -376,16 +391,16 @@ public class MockDatabase
         table.Columns.Add("added_by", typeof(int));
 
 
-        var matchingDonor = mockDonors.Where(d => 
+        var matchingDonor = mockDonors.Where(d =>
         {
-            var matchingDonorId= d.donor_id.ToString().Contains(keyword);
+            var matchingDonorId = d.donor_id.ToString().Contains(keyword);
             var matchingFirstName = d.first_name.Contains(keyword);
             var matchingLastName = d.last_name.Contains(keyword);
-             var matchingEmail = d.email.Contains(keyword);
+            var matchingEmail = d.email.Contains(keyword);
             var matchingBloodGroup = d.blood_group.Contains(keyword);
             return matchingDonorId || matchingFirstName || matchingLastName || matchingEmail || matchingBloodGroup;
-      
-    }).ToList();
+
+        }).ToList();
 
 
         foreach (var donor in matchingDonor)
@@ -396,6 +411,22 @@ public class MockDatabase
         return matchingDonor.Count;
     }
 
+    internal object SearchUsersInTheDataSet(DataSet dataSet)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal static object SearchUsersByKeyword(string v)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal static int GetIDFromUsername(string username)
+    {
+        throw new NotImplementedException();
+    }
+}
+
 
     #endregion
-}
+    

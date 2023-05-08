@@ -1,9 +1,11 @@
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using BloodBankManagementSystem.BLL;
 using BloodBankManagementSystem.DAL;
 using Moq;
+using MySqlX.XDevAPI.Common;
 using NUnit.Framework;
 
 namespace BloodBankManagementSystem.Tests.DAL_Tests;
@@ -163,53 +165,86 @@ public class UserDALTests
         Assert.AreEqual(userWithUpdatedValues.added_date, updatedMockUser.added_date);
         Assert.AreEqual(userWithUpdatedValues.image_name, updatedMockUser.image_name); 
     }
+
+  
+    [Test]
+    public void TestingSearchMethod()
+    {
+        var mockDatabase = new MockDatabase();
+        var userDAL = new userDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+
+        // mocking string sql = "SELECT * FROM tbl_users";
+        mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
+        {
+            var usersSelected = mockDatabase.SearchUsersInTheDataSet(dataSet);
+            return usersSelected;
+        });
+        var dataTable = userDAL.Search();
+        var users = MockDatabase.SearchUsersByKeyword("Stephen");
+
+
+    // Act
+    var results = userDAL.Search("John"); 
+
+    // Assert
+    Assert.AreEqual(2, results.Count); 
+    Assert.AreEqual("StephenDoe", results[0].username);
+    Assert.AreEqual("StephenDoe@example.com", results[0].email);
+        Assert.AreEqual("Stephen Doe", results[0].full_name);
+    Assert.AreEqual("StephenSmith", results[1].username);
+    Assert.AreEqual("stephensmith@example.com", results[1].email);
+    Assert.AreEqual("Stephen Smith", results[1].full_name);
 }
 
 [Test]
-public void TestSearchUserByKeyword()
-{
-    // Arrange
-    var dataSet = new DataSet();
-    var mockUsers = new List<User>
+    public int getIDFromUsername()
     {
-        new User { user_id = 1, username = "pdoe", email = "pdoe@example.com", password = "password", full_name = "Peter Doe", contact = "555-1234", address = "123 Main St", added_date = DateTime.Now, image_name = "pdoe.jpg" },
-        new User { user_id = 2, username = "msmith", email = "msmith@example.com", password = "password", full_name = "Mary Smith", contact = "555-5678", address = "456 Elm St", added_date = DateTime.Now, image_name = "msmith.jpg" },
-        new User { user_id = 3, username = "jwilliams", email = "jwilliams@example.com", password = "password", full_name = "James Williams", contact = "555-9012", address = "789 Oak St", added_date = DateTime.Now, image_name = "jwilliams.jpg" },
-    };
-    var keyword = "Smith";
-    var expectedCount = 1;
+        var mockDatabase = new MockDatabase();
 
-    // Act
-    var target = new userDAL(mockUsers);
-    var actualCount = target.SearchUserByKeyword(dataSet, keyword);
+        var userDAL = new userDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
 
-    // Assert
-    Assert.AreEqual(expectedCount, actualCount);
-    Assert.AreEqual(1, dataSet.Tables.Count);
-    Assert.AreEqual(1, dataSet.Tables[0].Rows.Count);
-    Assert.AreEqual("msmith", dataSet.Tables[0].Rows[0]["username"]);
+        // mocking string sql = "SELECT * FROM tbl_users";
+        mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
+        {
+            var usersSelected = mockDatabase.SearchUsersInTheDataSet(dataSet);
+            return usersSelected;
+        });
+        var dataTable = userDAL.Search();
+        var users = MockDatabase.SearchUsersByKeyword("Stephen");
+
+        // Arrange
+        string username = "stephen"; 
+        var dataSet = new DataSet(); 
+            var table = new DataTable();
+    table.Columns.Add("user_id", typeof(int));
+
+
+    int userID = MockDatabase.GetIDFromUsername(username);
+
+    if (userID != -1)
+    {
+        // If the user ID is found, add a new row to the table with the user ID
+        var row = table.NewRow();
+        row["user_id"] = userID;
+        table.Rows.Add(row);
+    }
+
+    // Add the table to the dataset and return the number of rows in the table
+    dataSet.Tables.Add(table);
+    return table.Rows.Count;
+ 
+    }
+
+        // Act
+        int userID = userDAL.Search(username);
+
+    public static object username { get; private set; }
+
+   
+  
+
+
+
 }
 
-[Test]
-public void TestGetIdFromUsername()
-{
-    // Arrange
-    var dataSet = new DataSet();
-    var mockUsers = new List<User>
-    {
-        new User { user_id = 1, username = "r.doe", email = "ralph.doe@example.com", password = "password123", full_name = "Ralph Doe", contact = "1234567890", address = "123 Main St", added_date = DateTime.Now, image_name = "ralph.jpg" },
-        new User { user_id = 2, username = "jane.doe", email = "jane.doe@example.com", password = "password456", full_name = "Jane Doe", contact = "0987654321", address = "456 Oak Ave", added_date = DateTime.Now, image_name = "jane.jpg" }
-    };
-    var keyword = "john.doe";
-    var expectedCount = 1;
-
-    var mockUserRepository = new Mock<IUserRepository>();
-    mockUserRepository.Setup(x => x.GetIdFromUsername(dataSet, keyword)).Returns(expectedCount);
-
-    // Act
-    var actualCount = mockUserRepository.Object.GetIdFromUsername(dataSet, keyword);
-
-    // Assert
-    Assert.AreEqual(expectedCount, actualCount);
-}
 

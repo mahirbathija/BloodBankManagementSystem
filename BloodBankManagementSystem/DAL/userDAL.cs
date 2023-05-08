@@ -390,6 +390,16 @@ namespace BloodBankManagementSystem.DAL
 
             return u;
         }
+
+        public object Search()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static int Search(object username)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }
