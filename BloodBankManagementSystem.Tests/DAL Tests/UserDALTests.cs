@@ -5,7 +5,6 @@ using System.Linq;
 using BloodBankManagementSystem.BLL;
 using BloodBankManagementSystem.DAL;
 using Moq;
-using MySqlX.XDevAPI.Common;
 using NUnit.Framework;
 
 namespace BloodBankManagementSystem.Tests.DAL_Tests;
@@ -179,18 +178,18 @@ public class UserDALTests
             var usersSelected = mockDatabase.SearchUsersInTheDataSet(dataSet);
             return usersSelected;
         });
-        var dataTable = userDAL.Search();
-        var users = MockDatabase.SearchUsersByKeyword("Stephen");
+       
+       
 
 
     // Act
-    var results = userDAL.Search("John"); 
+    var results = userDAL.Search("Stephen"); 
 
     // Assert
     Assert.AreEqual(2, results.Count); 
     Assert.AreEqual("StephenDoe", results[0].username);
     Assert.AreEqual("StephenDoe@example.com", results[0].email);
-        Assert.AreEqual("Stephen Doe", results[0].full_name);
+    Assert.AreEqual("Stephen Doe", results[0].full_name);
     Assert.AreEqual("StephenSmith", results[1].username);
     Assert.AreEqual("stephensmith@example.com", results[1].email);
     Assert.AreEqual("Stephen Smith", results[1].full_name);
@@ -209,8 +208,8 @@ public class UserDALTests
             var usersSelected = mockDatabase.SearchUsersInTheDataSet(dataSet);
             return usersSelected;
         });
-        var dataTable = userDAL.Search();
-        var users = MockDatabase.SearchUsersByKeyword("Stephen");
+       
+       
 
         // Arrange
         string username = "stephen"; 
