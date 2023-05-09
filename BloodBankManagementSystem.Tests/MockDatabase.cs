@@ -315,7 +315,7 @@ public class MockDatabase
                 results.Add(user);
 
             }
-           
+
         }
         return results;
     }
@@ -410,23 +410,9 @@ public class MockDatabase
         dataSet.Tables.Add(table);
         return matchingDonor.Count;
     }
-
-    internal object SearchUsersInTheDataSet(DataSet dataSet)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal static object SearchUsersByKeyword(string v)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal static int GetIDFromUsername(string username)
-    {
-        throw new NotImplementedException();
-    }
 }
+    
 
-
+   
     #endregion
     
