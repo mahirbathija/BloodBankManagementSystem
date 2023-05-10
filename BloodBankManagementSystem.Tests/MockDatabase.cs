@@ -315,13 +315,68 @@ public class MockDatabase
                 results.Add(user);
 
             }
-           
+
         }
         return results;
     }
 
-    #region donorDAL
+    public donorBLL SelectDonor(int DonorId)
+    {
+        try
+        {
+            var matchingDonor = mockDonors.FirstOrDefault(d => d.donor_id == DonorId);
+            return matchingDonor;
+        }
+        catch (Exception exception)
+        {
+            return null;
+        }
+    }
 
+    #region donorDAL
+    public int AddDonor(donorBLL newDonor)
+    {
+        try
+        {
+            // Add new donor to collection
+            mockDonors.Add(newDonor);
+
+            return 1;
+        }
+        catch (Exception exception)
+        {
+            return 0;
+        }
+    }
+
+    public int UpdateDonor(donorBLL donor)
+    {
+        try
+        {
+            // Find the matching donor in the collection
+            var matchingDonor = mockDonors.FirstOrDefault(d => d.donor_id == donor.donor_id);
+            if (matchingDonor == null)
+                return 0;
+
+            // Update the donor object
+            matchingDonor.first_name = donor.first_name;
+            matchingDonor.last_name = donor.last_name;
+            matchingDonor.email = donor.email;
+            matchingDonor.contact = donor.contact;
+            matchingDonor.gender = donor.gender;
+            matchingDonor.address = donor.address;
+            matchingDonor.blood_group = donor.blood_group;
+            matchingDonor.added_date = donor.added_date;
+            matchingDonor.image_name = donor.image_name;
+            matchingDonor.added_by = donor.added_by;
+
+            return 1;
+        }
+        catch (Exception exception)
+        {
+            return 0;
+        }
+    }
     public int DeleteDonor(int DonorId)
     {
         try

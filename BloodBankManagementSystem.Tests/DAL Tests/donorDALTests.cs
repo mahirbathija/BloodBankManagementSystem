@@ -42,6 +42,108 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
             mockDbConnection.Setup(m => m.CreateCommand()).Returns(mockDbCommand.Object);
         }
 
+
+        [Test]
+        [TestCase(1, "O+", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(1, O+)")]
+        [TestCase(2, "O-", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(2, O-)")]
+        [TestCase(3, "A+", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(3, A+)")]
+        [TestCase(4, "A-", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(4, A-)")]
+        [TestCase(5, "B+", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(5, B+)")]
+        [TestCase(6, "B-", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(6, B-)")]
+        [TestCase(7, "AB+", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(7, AB+)")]
+        [TestCase(8, "AB-", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(8, AB-)")]
+
+
+
+        public bool DonorDAL_Insert_Success(int Donor_id, String bloodType)
+        {
+            //Mock Database
+            var mockDatabase = new MockDatabase();
+            //Donor dal
+            var Donordal = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+
+            // Setup the mock IDbConnection to return the mock IDbCommand
+            mockDbConnection.Setup(x => x.CreateCommand()).Returns(mockDbCommand.Object);
+
+            donorBLL donors = new donorBLL
+            {
+                donor_id = Donor_id,
+                first_name = "test",
+                last_name = "test",
+                email = "test",
+                contact = "test",
+                gender = "male",
+                address = "test",
+                blood_group = bloodType,
+                added_date = DateTime.Now,
+                image_name = "test",
+                added_by = 1
+            };
+
+            mockDbCommand.Setup(m => m.ExecuteNonQuery()).Returns(() =>
+            {
+                var rowsInserted = mockDatabase.AddDonor(donors);
+                return rowsInserted;
+            });
+
+            // Act
+            var result = Donordal.Insert(donors);
+            // Assert
+            return result;
+        }
+
+
+        [Test]
+        [TestCase(1,"O+", ExpectedResult = true, TestName = "DonorDAL_true_Update(1, O+)")]
+        [TestCase(2,"O-", ExpectedResult = true, TestName = "DonorDAL_true_Update(2, O-)")]
+        [TestCase(3,"A+", ExpectedResult = true, TestName = "DonorDAL_true_Update(3, A+)")]
+        [TestCase(4,"A-", ExpectedResult = true, TestName = "DonorDAL_true_Update(4, A-)")]
+        [TestCase(5,"B+", ExpectedResult = true, TestName = "DonorDAL_true_Update(5, B+)")]
+        [TestCase(6,"B-", ExpectedResult = true, TestName = "DonorDAL_true_Update(6, B-)")]
+        [TestCase(7,"AB+", ExpectedResult = true, TestName = "DonorDAL_true_Update(7, AB+)")]
+        [TestCase(8,"AB-", ExpectedResult = true, TestName = "DonorDAL_true_Update(8, AB-)")]
+
+        public bool DonorDAL_Update_Success(int Donor_id, String bloodType)
+        {
+            //Mock Database
+            var mockDatabase = new MockDatabase();
+            //Donor dal
+            var donorDal = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+
+            // Setup the mock IDbConnection to return the mock IDbCommand
+            mockDbConnection.Setup(x => x.CreateCommand()).Returns(mockDbCommand.Object);
+
+            //Create donor object to update
+            var donorToUpdate = new donorBLL
+            {
+                donor_id = Donor_id,
+                first_name = "test",
+                last_name = "test",
+                email = "test",
+                contact = "test",
+                gender = "male",
+                address = "test",
+                blood_group = bloodType,
+                added_date = DateTime.Now,
+                image_name = "test",
+                added_by = 1
+            };
+
+            //Setup mock command to return number of rows affected by update query
+            mockDbCommand.Setup(m => m.ExecuteNonQuery()).Returns(() =>
+            {
+                var rowsUpdated = mockDatabase.UpdateDonor(donorToUpdate);
+                return rowsUpdated;
+            });
+
+            //Act
+            var result = donorDal.Update(donorToUpdate);
+
+            //Assert
+            return result;
+        }
+
+
         [Test]
         [TestCase(1, ExpectedResult = true, TestName = "DonorDAL_check_true_Available_inTable(1)")]
         [TestCase(2, ExpectedResult = true, TestName = "DonorDAL_check_true_Available_inTable(2)")]
