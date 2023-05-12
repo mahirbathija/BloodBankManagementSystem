@@ -205,9 +205,50 @@ public class UserDALTests
 
 }
 
+[Test]
+public int GetIDFromUsername(string username)
+{
+	var mockDatabase = new MockDatabase();
+    
+    var userDAL = new userDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+
+    // mocking string sql = "SELECT * FROM tbl_users";
+	mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
+	{
+		var usersSelected = mockDatabase.GetIdFromUsername(dataSet, username);
+		return usersSelected;
+	});
+
+    // Arrange 
+	var dataSet = new DataSet();
+	var table = new DataTable();
+	table.Columns.Add("user_id", typeof(int));
+
+   int userID = mockDatabase.GetIdFromUsername(dataSet, username);
+ 
+    // Act
+	var users = userDAL.GetIDFromUsername(username);
+
+    // Assert
+	Assert.AreEqual(-1, userID);
+    
+    if (userID != -1)
+	{
+		// If the user ID is found, add a new row to the table with the user ID
+		var row = table.NewRow();
+		row["user_id"] = userID;
+		table.Rows.Add(row);
+	}
+
+   // Add the table to the dataset and return the number of rows in the table
+	dataSet.Tables.Add(table);
+	return table.Rows.Count;
 
 
 
+}
+
+ }
 
 
 
