@@ -304,21 +304,7 @@ public class MockDatabase
         return 1;
     }
     #endregion
-    public List<userDAL> SearchUserByKeyword(string keyword)
-    {
-        var results = new List<userDAL>();
-
-        foreach (var user in mockUsers)
-        {
-            if (user.username.Contains(keyword) || user.full_name.Contains(keyword) || user.email.Contains(keyword))
-            {
-                results.Add(user);
-
-            }
-
-        }
-        return results;
-    }
+  
 
     public donorBLL SelectDonor(int DonorId)
     {

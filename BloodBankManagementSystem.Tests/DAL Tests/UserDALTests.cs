@@ -165,82 +165,92 @@ public class UserDALTests
         Assert.AreEqual(userWithUpdatedValues.image_name, updatedMockUser.image_name);
     }
 
-   
-
-        [Test]
-        public void search(string keywords)
-        {
-            var mockDatabase = new MockDatabase();
-
-            var userDAL = new userDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
-
-            // mocking string sql = "SELECT * FROM tbl_users";
-            mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
-            {
-                var usersSelected = mockDatabase.SearchUserByKeyword(dataSet, keywords);
-                return usersSelected;
-            });
-
-            // Arrange
-            var dataSet = new DataSet();
-            var table = new DataTable();
-            table.Columns.Add("user_id", typeof(int));
-            table.Columns.Add("full_name", typeof(string));
-            table.Columns.Add("address", typeof(string));
-            dataSet.Tables.Add(table);
-
-            // Act
-            var users = userDAL.Search(keywords);
-
-            // Assert
-            Assert.IsNotNull(users);
-            
-        }
 
 
-        [Test]
-     public int GetIDFromUsername(string username)
-        {
-            var mockDatabase = new MockDatabase();
+	[Test]
+	public void search(string keywords)
+	{
+		var mockDatabase = new MockDatabase();
 
-            var userDAL = new userDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+		var userDAL = new userDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
 
-            // mocking string sql = "SELECT * FROM tbl_users";
-            mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
-            {
-                var usersSelected = mockDatabase.GetIdFromUsername(dataSet, username);
-                return usersSelected;
-            });
+		// mocking string sql = "SELECT * FROM tbl_users";
+		mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
+		{
+			var usersSelected = mockDatabase.SearchUserByKeyword(dataSet, keywords);
+			return usersSelected;
+		});
 
-            // Arrange 
-            var dataSet = new DataSet();
-            var table = new DataTable();
-            table.Columns.Add("user_id", typeof(int));
+		// Arrange
+		var dataSet = new DataSet();
+		var table = new DataTable();
+		table.Columns.Add("user_id", typeof(int));
+		table.Columns.Add("full_name", typeof(string));
+		table.Columns.Add("address", typeof(string));
+		dataSet.Tables.Add(table);
+
+		// Act
+		var users = userDAL.Search(keywords);
+
+		//Assert
+
+		Assert.AreEqual(1, users.Rows[0]["user_id"]);
+		Assert.AreEqual("Paul Smith", users.Rows[0]["full_name"]);
+		Assert.AreEqual("123 Main St", users.Rows[0]["address"]);
+
+		Assert.AreEqual(2, users.Rows[1]["user_id"]);
+		Assert.AreEqual("Stephen Doe", users.Rows[1]["full_name"]);
+		Assert.AreEqual("456 Elm St", users.Rows[1]["address"]);
+	}
+
+}
+
+[Test]
+public int GetIDFromUsername(string username)
+{
+	var mockDatabase = new MockDatabase();
+    
+    var userDAL = new userDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+
+    // mocking string sql = "SELECT * FROM tbl_users";
+	mockDbDataAdapter.Setup(m => m.Fill(It.IsAny<DataSet>())).Returns((DataSet dataSet) =>
+	{
+		var usersSelected = mockDatabase.GetIdFromUsername(dataSet, username);
+		return usersSelected;
+	});
+
+    // Arrange 
+	var dataSet = new DataSet();
+	var table = new DataTable();
+	table.Columns.Add("user_id", typeof(int));
+
+   int userID = mockDatabase.GetIdFromUsername(dataSet, username);
+ 
+    // Act
+	var users = userDAL.GetIDFromUsername(username);
+
+    // Assert
+	Assert.AreEqual(-1, userID);
+    
+    if (userID != -1)
+	{
+		// If the user ID is found, add a new row to the table with the user ID
+		var row = table.NewRow();
+		row["user_id"] = userID;
+		table.Rows.Add(row);
+	}
+
+   // Add the table to the dataset and return the number of rows in the table
+	dataSet.Tables.Add(table);
+	return table.Rows.Count;
 
 
-            int userID = mockDatabase.GetIdFromUsername(dataSet, username);
 
-            if (userID != -1)
-            {
-                // If the user ID is found, add a new row to the table with the user ID
-                var row = table.NewRow();
-                row["user_id"] = userID;
-                table.Rows.Add(row);
-            }
+}
 
-            // Add the table to the dataset and return the number of rows in the table
-            dataSet.Tables.Add(table);
-            return table.Rows.Count;
+ }
 
-        // Act
-        var userID = userDAL.GetIDFromUsername(username);
 
-        // Assert
-        Assert.AreEqual(-1, userID);
-
-    }
-
-    }
 
 
 

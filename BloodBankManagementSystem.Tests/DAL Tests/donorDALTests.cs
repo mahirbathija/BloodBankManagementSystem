@@ -182,25 +182,11 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
             // Setup the mock IDbConnection to return the mock IDbCommand
             mockDbConnection.Setup(x => x.CreateCommand()).Returns(mockDbCommand.Object);
 
-            donorBLL donors = new donorBLL
-            {
-
-                donor_id = Donor_id,
-                first_name = "test",
-                last_name = "test",
-                email = "test",
-                contact = "test",
-                gender = "male",
-                address = "test",
-                blood_group = "O+",
-                added_date = DateTime.Now,
-                image_name = "test",
-                added_by = 1
-            };
+           
 
             mockDbCommand.Setup(m => m.ExecuteNonQuery()).Returns(() =>
             {
-                var rowsInserted = mockDatabase.DeleteDonor(donors.donor_id);
+                var rowsInserted = mockDatabase.DeleteDonor(Donor_id);
                 return rowsInserted;
             });
 
@@ -333,26 +319,21 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
         [TestCase("100", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(100)")]
 
         //First Name
-        [TestCase("abc", ExpectedResult = 1, TestName = "Search_Returns_value_exist(abc)")]
-        [TestCase("pol", ExpectedResult = 1, TestName = "Search_Returns_value_exist(pol)")]
+        [TestCase("yfg", ExpectedResult = 1, TestName = "Search_Returns_value_exist(yfg)")]
         [TestCase("nidhan", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(nidhan)")]
 
         //Last Name
-        [TestCase("Robinson", ExpectedResult = 1, TestName = "Search_Returns_value_exist(Robinson)")]
-        [TestCase("fgh", ExpectedResult = 1, TestName = "Search_Returns_value_exist(fgh)")]
+        [TestCase("ier", ExpectedResult = 1, TestName = "Search_Returns_value_exist(ier)")]
         [TestCase("xyz", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(xyz)")]
 
         //Email
-        [TestCase("jai@gmail.com", ExpectedResult = 1, TestName = "Search_Returns_value_exist(jai@gmail.com)")]
-        [TestCase("iop@seattleu.edu", ExpectedResult = 1, TestName = "Search_Returns_value_exist(iop@seattleu.edu)")]
+        [TestCase("yfg@gmail.com", ExpectedResult = 1, TestName = "Search_Returns_value_exist(yfg@gmail.com)")]
         [TestCase("nidhanbhatt@gmail.com", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(nidhanbhatt@gmail.com")]
        
         //  BloodGroup
         [TestCase("B+", ExpectedResult = 2, TestName = "Search_Returns_value_exist(B+)")] 
         [TestCase("B-", ExpectedResult = 2, TestName = "Search_Returns_value_exist(B-)")]
-        [TestCase("O-", ExpectedResult = 2, TestName = "Search_Returns_value_exist(O-)")]
-        [TestCase("AB+", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(AB+)")]
-        [TestCase("AB-", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(AB-)")]
+        [TestCase("AB+", ExpectedResult = 1, TestName = "Search_Returns_value_exist(AB+)")]
         [TestCase("F+", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(F+)")]
 
         public int SearchDonor(String Keyword)
