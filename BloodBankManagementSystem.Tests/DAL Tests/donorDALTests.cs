@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,18 +45,38 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
 
 
         [Test]
-        [TestCase(1, "O+", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(1, O+)")]
-        [TestCase(2, "O-", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(2, O-)")]
-        [TestCase(3, "A+", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(3, A+)")]
-        [TestCase(4, "A-", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(4, A-)")]
-        [TestCase(5, "B+", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(5, B+)")]
-        [TestCase(6, "B-", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(6, B-)")]
-        [TestCase(7, "AB+", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(7, AB+)")]
-        [TestCase(8, "AB-", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(8, AB-)")]
+        public void Select_Returns_All_Donors()
+        {
+            var mockDatabase = new MockDatabase();
+            //Donor dal
+            var Donordal = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
+
+            // Setup the mock IDbConnection to return the mock IDbCommand
+            mockDbConnection.Setup(x => x.CreateCommand()).Returns(mockDbCommand.Object);
+
+            // Act
+            var dataTable = Donordal.Select();
+
+            // Assert
+            Assert.NotNull(dataTable);
+        }
 
 
 
-        public bool DonorDAL_Insert_Success(int Donor_id, String bloodType)
+
+
+        [Test]
+        [TestCase(1, "ftest", "ltest", "email", "contact", "male", "temp" ,"O+", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(allNormal)")]
+        [TestCase(2, "", "test", "email", "contact", "female", "temp", "O-", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(no_fname)")]
+        [TestCase(3, "test", "", "email", "contact", "male", "temp", "A+", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(no_lname)")]
+        [TestCase(4, "test", "test", "", "contact", "female", "temp", "A-", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(no_email)")]
+        [TestCase(5, "test", "test", "email", "", "male", "temp", "B+", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(no_contact)")]
+        [TestCase(6, "test", "test", "email", "contact", "", "temp", "B-", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(no_gender)")]
+        [TestCase(7, "test", "test", "email", "contact", "male", "", "AB+", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(no_address)")]
+        [TestCase(8, "test", "test", "email", "contact", "male", "temp", "", ExpectedResult = true, TestName = "DonorDal_insert_true_Available_inTable(no_Btype)")]
+
+        public bool DonorDAL_Insert_Success(int Donor_id, String fname, String lname, String email, String contact, 
+            String sex, String address, String bloodType)
         {
             //Mock Database
             var mockDatabase = new MockDatabase();
@@ -68,12 +89,12 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
             donorBLL donors = new donorBLL
             {
                 donor_id = Donor_id,
-                first_name = "test",
-                last_name = "test",
-                email = "test",
-                contact = "test",
-                gender = "male",
-                address = "test",
+                first_name = fname,
+                last_name = lname,
+                email = email,
+                contact = contact,
+                gender = sex,
+                address = address,
                 blood_group = bloodType,
                 added_date = DateTime.Now,
                 image_name = "test",
@@ -92,18 +113,19 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
             return result;
         }
 
-
+       
         [Test]
-        [TestCase(1,"O+", ExpectedResult = true, TestName = "DonorDAL_true_Update(1, O+)")]
-        [TestCase(2,"O-", ExpectedResult = true, TestName = "DonorDAL_true_Update(2, O-)")]
-        [TestCase(3,"A+", ExpectedResult = true, TestName = "DonorDAL_true_Update(3, A+)")]
-        [TestCase(4,"A-", ExpectedResult = true, TestName = "DonorDAL_true_Update(4, A-)")]
-        [TestCase(5,"B+", ExpectedResult = true, TestName = "DonorDAL_true_Update(5, B+)")]
-        [TestCase(6,"B-", ExpectedResult = true, TestName = "DonorDAL_true_Update(6, B-)")]
-        [TestCase(7,"AB+", ExpectedResult = true, TestName = "DonorDAL_true_Update(7, AB+)")]
-        [TestCase(8,"AB-", ExpectedResult = true, TestName = "DonorDAL_true_Update(8, AB-)")]
+        [TestCase(1, "ftest", "ltest", "email", "contact", "male", "temp", "O+", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(allNormal)")]
+        [TestCase(2, "", "test", "email", "contact", "female", "temp", "O-", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_fname)")]
+        [TestCase(3, "test", "", "email", "contact", "male", "temp", "A+", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_lname)")]
+        [TestCase(4, "test", "test", "", "contact", "female", "temp", "A-", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_email)")]
+        [TestCase(5, "test", "test", "email", "", "male", "temp", "B+", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_contact)")]
+        [TestCase(6, "test", "test", "email", "contact", "", "temp", "B-", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_gender)")]
+        [TestCase(7, "test", "test", "email", "contact", "male", "", "AB+", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_address)")]
+        [TestCase(8, "test", "test", "email", "contact", "male", "temp", "", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_Btype)")]
 
-        public bool DonorDAL_Update_Success(int Donor_id, String bloodType)
+        public bool DonorDAL_Update_Success(int Donor_id, String fname, String lname, String email, String contact,
+            String sex, String address, String bloodType)
         {
             //Mock Database
             var mockDatabase = new MockDatabase();
@@ -117,12 +139,12 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
             var donorToUpdate = new donorBLL
             {
                 donor_id = Donor_id,
-                first_name = "test",
-                last_name = "test",
-                email = "test",
-                contact = "test",
-                gender = "male",
-                address = "test",
+                first_name = fname,
+                last_name = lname,
+                email = email,
+                contact = contact,
+                gender = sex,
+                address = address,
                 blood_group = bloodType,
                 added_date = DateTime.Now,
                 image_name = "test",
