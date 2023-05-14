@@ -5,7 +5,7 @@ using BloodBankManagementSystem.BLL;
 namespace BloodBankManagementSystem.Test
 {
     [TestFixture]
-    public class UserBLLTest
+    public class UserBLLTests
     {
         [Test]
         [TestCase(1, "MatthewStephen", "matthewstephen@gmail.com", "password090", "Matthew Stephen", "49745673456", "12 Madison St", "2023-05-19", "matthew.jpg")]

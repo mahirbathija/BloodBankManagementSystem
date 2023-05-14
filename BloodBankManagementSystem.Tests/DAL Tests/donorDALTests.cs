@@ -356,20 +356,7 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
 
             var donorsSelected = dataTable.Rows;
             return donorsSelected.Count;
-
-          
-
-
-
-
         }
-
-
-
-
-
-
-
     }
 }
 

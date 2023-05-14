@@ -27,6 +27,18 @@ public class MockDatabase
             address = "1000 Minor Ave",
             added_date = DateTime.Now,
             image_name = "mahir_profile_picture"
+        },
+        new()
+        {
+            user_id = 2,
+            username = "jeanpatrick",
+            email = "jeanpatrick@gmail.com",
+            password = "abc123",
+            full_name = "Jean Patrick",
+            contact = "2066930783",
+            address = "2000 2nd Ave",
+            added_date = DateTime.Now,
+            image_name = "jean_profile_picture"
         }
     };
 
@@ -209,7 +221,7 @@ public class MockDatabase
 
     public int DeleteUser(int userId)
     {
-        var matchingUser = mockUsers.First(u => u.user_id == userId);
+        var matchingUser = mockUsers.FirstOrDefault(u => u.user_id == userId);
 
         if (matchingUser == null)
             return 0;
@@ -221,7 +233,7 @@ public class MockDatabase
 
     public int UpdateUser(userBLL user)
     {
-        var matchingUser = mockUsers.First(u => u.user_id == user.user_id);
+        var matchingUser = mockUsers.FirstOrDefault(u => u.user_id == user.user_id);
 
         if (matchingUser == null)
             return 0;
@@ -283,14 +295,14 @@ public class MockDatabase
         table.Columns.Add("added_data", typeof(DateTime));
         table.Columns.Add("image_name", typeof(string));
 
-        var matchingUser = mockUsers.First(u => u.username == username);
+        var matchingUser = mockUsers.FirstOrDefault(u => u.username == username);
 
         if (matchingUser == null)
         {
             dataSet.Tables.Add(table);
             return 0;
         }
-
+        
         table.Rows.Add(matchingUser.user_id, matchingUser.username, matchingUser.email, matchingUser.password, matchingUser.full_name, matchingUser.contact, matchingUser.address, matchingUser.added_date, matchingUser.image_name);
 
         dataSet.Tables.Add(table);
