@@ -316,22 +316,35 @@ public class MockDatabase
         return 1;
     }
     #endregion
-  
 
-    public donorBLL SelectDonor(int DonorId)
-    {
-        try
-        {
-            var matchingDonor = mockDonors.FirstOrDefault(d => d.donor_id == DonorId);
-            return matchingDonor;
-        }
-        catch (Exception exception)
-        {
-            return null;
-        }
-    }
+
 
     #region donorDAL
+    public int SelectDonors(DataSet dataSet)
+    {
+        var table = new DataTable("MockDonorTable");
+        table.Columns.Add("donor_id", typeof(int));
+        table.Columns.Add("first_name", typeof(string));
+        table.Columns.Add("last_name", typeof(string));
+        table.Columns.Add("email", typeof(string));
+        table.Columns.Add("contact", typeof(string));
+        table.Columns.Add("gender", typeof(string));
+        table.Columns.Add("address", typeof(string));
+        table.Columns.Add("blood_group", typeof(string));
+        table.Columns.Add("added_date", typeof(DateTime));
+        table.Columns.Add("image_name", typeof(string));
+        table.Columns.Add("added_by", typeof(int));
+
+        foreach (var donor in mockDonors)
+        {
+            table.Rows.Add(donor.donor_id, donor.first_name, donor.last_name, donor.email, donor.contact, donor.gender, 
+                donor.blood_group, donor.added_date, donor.image_name, donor.added_by);
+        }
+
+        dataSet.Tables.Add(table);
+
+        return mockDonors.Count;
+    }
     public int AddDonor(donorBLL newDonor)
     {
         try
@@ -349,31 +362,25 @@ public class MockDatabase
 
     public int UpdateDonor(donorBLL donor)
     {
-        try
-        {
-            // Find the matching donor in the collection
-            var matchingDonor = mockDonors.FirstOrDefault(d => d.donor_id == donor.donor_id);
-            if (matchingDonor == null)
-                return 0;
 
-            // Update the donor object
-            matchingDonor.first_name = donor.first_name;
-            matchingDonor.last_name = donor.last_name;
-            matchingDonor.email = donor.email;
-            matchingDonor.contact = donor.contact;
-            matchingDonor.gender = donor.gender;
-            matchingDonor.address = donor.address;
-            matchingDonor.blood_group = donor.blood_group;
-            matchingDonor.added_date = donor.added_date;
-            matchingDonor.image_name = donor.image_name;
-            matchingDonor.added_by = donor.added_by;
-
-            return 1;
-        }
-        catch (Exception exception)
-        {
+        // Find the matching donor in the collection
+        var matchingDonor = mockDonors.FirstOrDefault(d => d.donor_id == donor.donor_id);
+        if (matchingDonor == null)
             return 0;
-        }
+
+        // Update the donor object
+        matchingDonor.first_name = donor.first_name;
+        matchingDonor.last_name = donor.last_name;
+        matchingDonor.email = donor.email;
+        matchingDonor.contact = donor.contact;
+        matchingDonor.gender = donor.gender;
+        matchingDonor.address = donor.address;
+        matchingDonor.blood_group = donor.blood_group;
+        matchingDonor.added_date = donor.added_date;
+        matchingDonor.image_name = donor.image_name;
+        matchingDonor.added_by = donor.added_by;
+
+        return 1;
     }
     public int DeleteDonor(int DonorId)
     {
