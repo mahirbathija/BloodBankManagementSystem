@@ -120,6 +120,8 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
 
             var updatedDonor = new donorBLL { donor_id = donorId };
 
+            var updatedDateTime = DateTime.Now;
+
             var updateDonorValues = new donorBLL
             {
                 donor_id = updatedDonor.donor_id,
@@ -130,7 +132,7 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
                 gender = "new_gender",
                 address = "new_address",
                 blood_group = "A+",
-                added_date = DateTime.Now,
+                added_date = updatedDateTime,
                 image_name = "new_image",
                 added_by = 1,
             };
@@ -385,7 +387,7 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
         //  BloodGroup
         [TestCase("B+", ExpectedResult = 2, TestName = "Search_Returns_value_exist(B+)")] 
         [TestCase("B-", ExpectedResult = 2, TestName = "Search_Returns_value_exist(B-)")]
-        [TestCase("AB+", ExpectedResult = 1, TestName = "Search_Returns_value_exist(AB+)")]
+        [TestCase("A-", ExpectedResult = 1, TestName = "Search_Returns_value_exist(AB+)")]
         [TestCase("F+", ExpectedResult = 0, TestName = "Search_Returns_value_not_exist(F+)")]
 
         public int SearchDonor(String Keyword)

@@ -337,8 +337,8 @@ public class MockDatabase
 
         foreach (var donor in mockDonors)
         {
-            table.Rows.Add(donor.donor_id, donor.first_name, donor.last_name, donor.email, donor.contact, donor.gender, 
-                donor.blood_group, donor.added_date, donor.image_name, donor.added_by);
+            table.Rows.Add(donor.donor_id, donor.first_name, donor.last_name, donor.email, donor.contact, donor.gender
+                , donor.address, donor.blood_group, donor.added_date, donor.image_name, donor.added_by);
         }
 
         dataSet.Tables.Add(table);
