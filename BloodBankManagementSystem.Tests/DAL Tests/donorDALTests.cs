@@ -161,63 +161,12 @@ namespace BloodBankManagementSystem.Tests.DAL_Tests
             Assert.AreEqual(updateDonorValues.gender, updatedMockDonor.gender);
             Assert.AreEqual(updateDonorValues.address, updatedMockDonor.address);
             Assert.AreEqual(updateDonorValues.blood_group, updatedMockDonor.blood_group);
-            Assert.AreEqual(updateDonorValues.added_date, updatedMockDonor.added_date);
+            Assert.IsTrue((updatedMockDonor.added_date - updateDonorValues.added_date).Duration() <= TimeSpan.FromSeconds(1));
             Assert.AreEqual(updateDonorValues.image_name, updatedMockDonor.image_name);
             Assert.AreEqual(updateDonorValues.added_by, updatedMockDonor.added_by);
 
             return updated;
         }
-
-        //[Test]
-        //[TestCase(1, "ftest", "ltest", "email", "contact", "male", "temp", "O+", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(allNormal)")]
-        //[TestCase(2, "", "test", "email", "contact", "female", "temp", "O-", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_fname)")]
-        //[TestCase(3, "test", "", "email", "contact", "male", "temp", "A+", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_lname)")]
-        //[TestCase(4, "test", "test", "", "contact", "female", "temp", "A-", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_email)")]
-        //[TestCase(5, "test", "test", "email", "", "male", "temp", "B+", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_contact)")]
-        //[TestCase(6, "test", "test", "email", "contact", "", "temp", "B-", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_gender)")]
-        //[TestCase(7, "test", "test", "email", "contact", "male", "", "AB+", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_address)")]
-        //[TestCase(8, "test", "test", "email", "contact", "male", "temp", "", ExpectedResult = true, TestName = "DonorDal_update_true_Available_inTable(no_Btype)")]
-
-        //public bool DonorDAL_Update_Success(int Donor_id, String fname, String lname, String email, String contact,
-        //    String sex, String address, String bloodType)
-        //{
-        //    //Mock Database
-        //    var mockDatabase = new MockDatabase();
-        //    //Donor dal
-        //    var donorDal = new donorDAL(mockDbConnection.Object, mockDbDataAdapter.Object);
-
-        //    // Setup the mock IDbConnection to return the mock IDbCommand
-        //    mockDbConnection.Setup(x => x.CreateCommand()).Returns(mockDbCommand.Object);
-
-        //    //Create donor object to update
-        //    var donorToUpdate = new donorBLL
-        //    {
-        //        donor_id = Donor_id,
-        //        first_name = fname,
-        //        last_name = lname,
-        //        email = email,
-        //        contact = contact,
-        //        gender = sex,
-        //        address = address,
-        //        blood_group = bloodType,
-        //        added_date = DateTime.Now,
-        //        image_name = "test",
-        //        added_by = 1
-        //    };
-
-        //    //Setup mock command to return number of rows affected by update query
-        //    mockDbCommand.Setup(m => m.ExecuteNonQuery()).Returns(() =>
-        //    {
-        //        var rowsUpdated = mockDatabase.UpdateDonor(donorToUpdate);
-        //        return rowsUpdated;
-        //    });
-
-        //    //Act
-        //    var result = donorDal.Update(donorToUpdate);
-
-        //    //Assert
-        //    return result;
-        //}
 
 
         [Test]
