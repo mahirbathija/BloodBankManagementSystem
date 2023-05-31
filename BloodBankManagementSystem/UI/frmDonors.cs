@@ -154,8 +154,16 @@ namespace BloodBankManagementSystem.UI
             //Get the image path
             string paths = Application.StartupPath.Substring(0, (Application.StartupPath.Length) - 10);
             string imagePath = paths + "\\images\\" + imageName;
-            //Display the Image of SElected User
-            pictureBoxProfilePicture.Image = new Bitmap(imagePath);
+            try
+            {
+                //Display the Image of SElected User
+                pictureBoxProfilePicture.Image = new Bitmap(imagePath);
+            }
+            catch(Exception ex)
+            {
+                //exception throw
+            }
+           
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -177,12 +185,19 @@ namespace BloodBankManagementSystem.UI
             d.added_by = usr.user_id;
             d.image_name = imageName;
 
-            // Upload new image
-            //Check whether the user has selected the image or not
-            if (imageName != "no-image.jpg")
+            try
             {
-                //Upload the image
-                File.Copy(sourcePath, destinationPath);
+                // Upload new image
+                //Check whether the user has selected the image or not
+                if (imageName != "no-image.jpg")
+                {
+                    //Upload the image
+                    File.Copy(sourcePath, destinationPath);
+                }
+            }
+            catch(Exception ex)
+            {
+                //MessageBox.Show(ex.Message);
             }
 
             //Create a Boolean Variable to Check whether the data updated successfully or not
@@ -207,7 +222,14 @@ namespace BloodBankManagementSystem.UI
                 GC.WaitForPendingFinalizers();
 
                 //Delete the Physical image file of Donors
-                File.Delete(imagePath);
+                try
+                {
+                    File.Delete(imagePath);
+                }
+                 catch (Exception ex)
+                {
+                   // MessageBox.Show(ex.Message);
+                }
             }
 
             //If the data updated successfully then the value of isSuccess will be true else it will be false
@@ -251,10 +273,18 @@ namespace BloodBankManagementSystem.UI
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
 
-                //Delete the Physical image file of Donors
-                File.Delete(imagePath);
+                try
+                { 
+                   //Delete the Physical image file of Donors
+                    File.Delete(imagePath);
+                }
+                catch (Exception ex)
+                {
+                 //   MessageBox.Show(ex.Message);
+                }
             }
-
+                
+           
             //Create a Boolean Variable to Check whether the donor deleted or not
             bool isSuccess = dal.Delete(d);
 

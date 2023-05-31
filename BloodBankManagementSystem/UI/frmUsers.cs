@@ -51,10 +51,17 @@ namespace BloodBankManagementSystem.UI
 
             //Upload the image if it is selected
             //check whether the user has selected the image or not
-            if(imageName != "no-image.jpg")
+            try
             {
-                //User has selected the image
-                File.Copy(sourcePath, destinationPath);
+                if (imageName != "no-image.jpg")
+                {
+                    //User has selected the image
+                    File.Copy(sourcePath, destinationPath);
+                }
+            }
+            catch(Exception ex)
+            {
+             //   MessageBox.Show(ex.Message);
             }
 
             //Step2: Adding the Values from UI to the Database
@@ -118,20 +125,26 @@ namespace BloodBankManagementSystem.UI
             //Display the Image of SElected User
             //Get the Image path
             string paths = Application.StartupPath.Substring(0, (Application.StartupPath.Length - 10));
-
-            if(imageName != "no-image.jpg")
+            try
             {
-                //Path to Destination Folder
-                string imagePath = paths + "\\images\\" + imageName;
-                //Diplay in Picture Box
-                pictureBoxProfilePicture.Image = new Bitmap(imagePath);
+                if (imageName != "no-image.jpg")
+                {
+                    //Path to Destination Folder
+                    string imagePath = paths + "\\images\\" + imageName;
+                    //Diplay in Picture Box
+                    pictureBoxProfilePicture.Image = new Bitmap(imagePath);
+                }
+                else
+                {
+                    //Path to Destination Folder
+                    string imagePath = paths + "\\images\\no-image.jpg";
+                    //Diplay in Picture Box
+                    pictureBoxProfilePicture.Image = new Bitmap(imagePath);
+                }
             }
-            else
+            catch(Exception ex)
             {
-                //Path to Destination Folder
-                string imagePath = paths + "\\images\\no-image.jpg";
-                //Diplay in Picture Box
-                pictureBoxProfilePicture.Image = new Bitmap(imagePath);
+               // MessageBox.Show(ex.Message);
             }
         }
 
@@ -155,13 +168,19 @@ namespace BloodBankManagementSystem.UI
             u.added_date = DateTime.Now;
             u.image_name = imageName;
 
-
-            //Upload New Image
-            //check whether the user has selected the image or not
-            if (imageName != "no-image.jpg")
+            try
             {
-                //User has selected the image
-                File.Copy(sourcePath, destinationPath);
+                //Upload New Image
+                //check whether the user has selected the image or not
+                if (imageName != "no-image.jpg")
+                {
+                    //User has selected the image
+                    File.Copy(sourcePath, destinationPath);
+                }
+            }
+            catch(Exception ex)
+            {
+               // MessageBox.Show(ex.Message);
             }
 
             //Step 2: Create a Boolean variable to check whether the data is updated successfully or not
@@ -223,8 +242,15 @@ namespace BloodBankManagementSystem.UI
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
 
-                //Delete hte Physical File of the User Profile
-                File.Delete(imagePath);
+                try
+                {
+                    //Delete hte Physical File of the User Profile
+                    File.Delete(imagePath);
+                }
+                catch(Exception ex)
+                {
+                    //MessageBox.Show(ex.Message);
+                }
             }
 
             //Step Create the Boolean value to check whether the user deleted or not

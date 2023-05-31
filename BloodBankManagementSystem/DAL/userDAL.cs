@@ -87,39 +87,39 @@ namespace BloodBankManagementSystem.DAL
                 var cmd = conn.CreateCommand();
                 cmd.CommandText = sql;
                 cmd.Connection = conn;
-                
+
                 //Create the Parameter to pass get the value from UI and pass it on SQL Query above
-                var usernameParameter = cmd.CreateParameter();
-                usernameParameter.ParameterName = "@username";
+                var usernameParameter = new SqlParameter("@username", SqlDbType.NVarChar);
                 usernameParameter.Value = u.username;
-                
-                var emailParameter = cmd.CreateParameter();
-                emailParameter.ParameterName = "@email";
+                cmd.Parameters.Add(usernameParameter);
+
+                var emailParameter = new SqlParameter("@email", SqlDbType.NVarChar);
                 emailParameter.Value = u.email;
+                cmd.Parameters.Add(emailParameter);
                 
-                var passwordParameter = cmd.CreateParameter();
-                passwordParameter.ParameterName = "@password";
+                var passwordParameter = new SqlParameter("@password", SqlDbType.NVarChar);
                 passwordParameter.Value = u.password;
+                cmd.Parameters.Add(passwordParameter);
                 
-                var full_nameParameter = cmd.CreateParameter();
-                full_nameParameter.ParameterName = "@full_name";
+                var full_nameParameter = new SqlParameter(@"full_name", SqlDbType.NVarChar);
                 full_nameParameter.Value = u.full_name;
-                
-                var contactParameter = cmd.CreateParameter();
-                contactParameter.ParameterName = "@contact";
+                cmd.Parameters.Add(full_nameParameter);
+              
+                var contactParameter = new SqlParameter("@contact", SqlDbType.NVarChar);
                 contactParameter.Value = u.contact;
+                cmd.Parameters.Add(contactParameter);
                 
-                var addressParameter = cmd.CreateParameter();
-                addressParameter.ParameterName = "@address";
+                var addressParameter = new SqlParameter ("address", SqlDbType.NVarChar);
                 addressParameter.Value = u.address;
+                cmd.Parameters.Add(addressParameter);
                 
-                var added_dateParameter = cmd.CreateParameter();
-                added_dateParameter.ParameterName = "@added_date";
+                var added_dateParameter = new SqlParameter("@added_date", SqlDbType.DateTime);
                 added_dateParameter.Value = u.added_date;
+                cmd.Parameters.Add(added_dateParameter);
                 
-                var image_nameParameter = cmd.CreateParameter();
-                image_nameParameter.ParameterName = "@image_name";
+                var image_nameParameter = new SqlParameter("@image_name", SqlDbType.NVarChar);
                 image_nameParameter.Value = u.image_name;
+                cmd.Parameters.Add(image_nameParameter);
                 
 
                 //Open Database Connection
@@ -172,43 +172,44 @@ namespace BloodBankManagementSystem.DAL
                 var cmd = conn.CreateCommand();
                 cmd.CommandText = sql;
                 cmd.Connection = conn;
-                
+
                 //Now Pass the values to SQL Query
-                var usernameParameter = cmd.CreateParameter();
-                usernameParameter.ParameterName = "@username";
+                var usernameParameter = new SqlParameter("@username", SqlDbType.NVarChar);
                 usernameParameter.Value = u.username;
-                
-                var emailParameter = cmd.CreateParameter();
-                emailParameter.ParameterName = "@email";
+                cmd.Parameters.Add(usernameParameter);
+
+                var emailParameter = new SqlParameter("@email", SqlDbType.NVarChar);
                 emailParameter.Value = u.email;
-                
-                var passwordParameter = cmd.CreateParameter();
-                passwordParameter.ParameterName = "@password";
+                cmd.Parameters.Add(emailParameter);
+
+                var passwordParameter = new SqlParameter("@password", SqlDbType.NVarChar);
                 passwordParameter.Value = u.password;
-                
-                var full_nameParameter = cmd.CreateParameter();
-                full_nameParameter.ParameterName = "@full_name";
+                cmd.Parameters.Add(passwordParameter);
+
+                var full_nameParameter = new SqlParameter(@"full_name", SqlDbType.NVarChar);
                 full_nameParameter.Value = u.full_name;
-                
-                var contactParameter = cmd.CreateParameter();
-                contactParameter.ParameterName = "@contact";
+                cmd.Parameters.Add(full_nameParameter);
+
+                var contactParameter = new SqlParameter("@contact", SqlDbType.NVarChar);
                 contactParameter.Value = u.contact;
-                
-                var addressParameter = cmd.CreateParameter();
-                addressParameter.ParameterName = "@address";
+                cmd.Parameters.Add(contactParameter);
+
+                var addressParameter = new SqlParameter("address", SqlDbType.NVarChar);
                 addressParameter.Value = u.address;
-                
-                var added_dateParameter = cmd.CreateParameter();
-                added_dateParameter.ParameterName = "@added_date";
+                cmd.Parameters.Add(addressParameter);
+
+                var added_dateParameter = new SqlParameter("@added_date", SqlDbType.DateTime);
                 added_dateParameter.Value = u.added_date;
-                
-                var image_nameParameter = cmd.CreateParameter();
-                image_nameParameter.ParameterName = "@image_name";
+                cmd.Parameters.Add(added_dateParameter);
+
+                var image_nameParameter = new SqlParameter("@image_name", SqlDbType.NVarChar);
                 image_nameParameter.Value = u.image_name;
+                cmd.Parameters.Add(image_nameParameter);
+
                 
-                var user_idParameter = cmd.CreateParameter();
-                user_idParameter.ParameterName = "@user_id";
+                var user_idParameter = new SqlParameter("@user_id", SqlDbType.Int);
                 user_idParameter.Value = u.user_id;
+                cmd.Parameters.Add(user_idParameter);
                 
                 //open Database Connection
                 conn.Open();
@@ -261,11 +262,11 @@ namespace BloodBankManagementSystem.DAL
                 var cmd = conn.CreateCommand();
                 cmd.CommandText = sql;
                 cmd.Connection = conn;
-                
+
                 //Pass the value thorugh parameters
-                var user_idParameter = cmd.CreateParameter();
-                user_idParameter.ParameterName = "@user_id";
+                var user_idParameter = new SqlParameter("@user_id", SqlDbType.Int);
                 user_idParameter.Value = u.user_id;
+                cmd.Parameters.Add(user_idParameter);
 
                 //Open the DAtabase Connection
                 conn.Open();

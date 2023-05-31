@@ -327,6 +327,7 @@ namespace BloodBankManagementSystem.DAL
                 cmd.Parameters.Add(donorParameter);
 
                 //Create an Integer Variable to check whether the query executed Successfully or not
+                conn.Open ();
                 int rows = cmd.ExecuteNonQuery();
 
 
